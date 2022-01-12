@@ -18,7 +18,7 @@ public class MessageListener extends ListenerAdapter {
         this.bot = bot;
     }
 
-    private static final List<String> TEXT_EXTENSIONS = Arrays.asList("txt", "yml", "log", "yaml", "json", "");
+    private static final List<String> TEXT_EXTENSIONS = Arrays.asList("txt", "yml", "log", "yaml", "json", "js");
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
