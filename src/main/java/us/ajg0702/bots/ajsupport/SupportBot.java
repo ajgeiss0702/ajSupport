@@ -38,7 +38,8 @@ public class SupportBot {
         }
 
         JDA jda = bot.getJDA();
-        jda.addEventListener(new CommandListener(bot), new InviteListener(bot), new ReactionRoleListener(bot));
+        jda.addEventListener(new CommandListener(bot), new InviteListener(bot), new ReactionRoleListener(bot),
+                new MessageListener(bot));
 
         //jda.upsertCommand("aping", "ping pong").queue();
         //Objects.requireNonNull()).upsertCommand("agping", "ping pong (guild").queue();

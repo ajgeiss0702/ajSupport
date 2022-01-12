@@ -1,5 +1,4 @@
-start-dev.sh
-start-prod.sh
+start.sh
 build
 .gradle
 .idea
