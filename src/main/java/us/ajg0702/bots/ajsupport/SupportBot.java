@@ -4,9 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
 
@@ -14,37 +13,32 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class SupportBot {
 
-    private JDA jda;
-    private Logger logger;
+    private final JDA jda;
+    private final Logger logger;
     private JsonObject json;
 
     public static void main(String[] args) throws InterruptedException {
         JDABuilder builder = JDABuilder.createDefault(args[0]);
         SupportBot bot;
 
-
-        CommandListener cmdL = new CommandListener();
         try {
-
             bot = new SupportBot(builder
                     .setAutoReconnect(true)
-                    .addEventListeners(cmdL)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_INVITES,
+                            GatewayIntent.GUILD_MESSAGE_REACTIONS)
                     .build());
         } catch (LoginException e) {
             e.printStackTrace();
             System.exit(1);
             return;
         }
+
         JDA jda = bot.getJDA();
-        cmdL.setJDA(jda);
-        cmdL.setBot(bot);
+        jda.addEventListener(new CommandListener(bot), new InviteListener(bot), new ReactionRoleListener(bot));
 
         //jda.upsertCommand("aping", "ping pong").queue();
         //Objects.requireNonNull()).upsertCommand("agping", "ping pong (guild").queue();

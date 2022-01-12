@@ -1,6 +1,5 @@
 package us.ajg0702.bots.ajsupport;
 
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -11,11 +10,11 @@ import org.slf4j.Logger;
 import java.util.concurrent.ExecutionException;
 
 public class CommandListener  extends ListenerAdapter {
-    private JDA jda;
-    private SupportBot bot;
+    private final SupportBot bot;
 
     private final Logger logger;
-    public CommandListener() {
+    public CommandListener(SupportBot bot) {
+        this.bot = bot;
         logger = JDALogger.getLog("Commands");
     }
 
@@ -72,13 +71,5 @@ public class CommandListener  extends ListenerAdapter {
         logger.debug("SlashCommand "+name);
 
         e.reply(bot.getJson().get(name).getAsString()).queue();
-    }
-
-    public void setJDA(JDA jda) {
-        this.jda = jda;
-    }
-
-    public void setBot(SupportBot bot) {
-        this.bot = bot;
     }
 }
