@@ -13,5 +13,7 @@
   "dontupdateperm": "Hello! You might not be appearing on the leaderboard because of the `dontupdate` permission.\nThis can happen if you are opped, or if you have the `*` permission in your permission plugin.\nTo fix this, either deop yourself, or negate the `ajleaderboards.dontupdate.*` permission in your permission plugin.",
   "onlineonly": "Hello! This question in the FAQ might be relavent to you:\nhttps://wiki.ajg0702.us/ajleaderboards/faq#why-does-the-leaderboard-only-show-online-players",
   "v2placeholders": "Hello! The placeholders were chaned in ajLeaderboards v2.0.0 in order to add support for timed leaderboards (daily, weekly, monthly, etc)\nIn most cases, you just have to add the `<type>` (which would be hourly, daily, weekly, or monthly) to the placeholder after the `<number>`\n\nSee the full new placeholders here: https://wiki.ajg0702.us/ajleaderboards/setup/placeholders",
-  "pingerdebug": "Hello! When you are having issues with ajqueue not being able to see that a server is online, there is a step you should complete that will help find the issue\nIn the config, change `pingder-debug` to `true`, then do `/ajq reload`.\nNow wait a minute or so, and then send your logs here."
+  "pingerdebug": "Hello! When you are having issues with ajqueue not being able to see that a server is online, there is a step you should complete that will help find the issue\nIn the config, change `pingder-debug` to `true`, then do `/ajq reload`.\nNow wait a minute or so, and then send your logs here.",
+  "knownfixed": "This is a known issue. It will be fixed in the next update.\nKeep an eye on <#707657644973752322> ;) ",
+  "knownlooking": "This is a known issue, and it is being looked into."
 }
