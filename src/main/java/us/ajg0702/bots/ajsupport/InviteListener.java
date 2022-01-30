@@ -24,7 +24,7 @@ public class InviteListener extends ListenerAdapter {
 
         Guild guild = bot.getJDA().getGuildById(615715762912362565L);
         if(guild == null) {
-            bot.getLogger().warn("aj's plugins guild doesnt exist. not creating commands.");
+            bot.getLogger().warn("aj's plugins guild doesnt exist. not creating invite list.");
             return;
         }
         try {
@@ -58,7 +58,7 @@ public class InviteListener extends ListenerAdapter {
 
             invites = newUses;
 
-            if(usedCode.get().isBlank()) {
+            if(usedCode.get().isEmpty()) {
                 channel.sendMessage(mention+" joined with an unknown invite! ").queue();
                 return;
             }
