@@ -5,7 +5,10 @@ import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
 
@@ -46,6 +49,7 @@ public class SupportBot {
 
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private SupportBot(JDA jda) throws InterruptedException {
         this.jda = jda;
         logger = JDALogger.getLog(jda.getSelfUser().getName());
@@ -66,29 +70,26 @@ public class SupportBot {
 
 
         new Thread(() -> {
-            try {
-                Guild guild = jda.getGuildById(615715762912362565L);
-                if(guild == null) {
-                    getLogger().warn("aj's plugins guild doesnt exist. not creating commands.");
-                    return;
-                }
-
-                guild.retrieveCommands().submit().get().forEach(command -> {
-                    if(!(command.getName().equals("remove") || command.getName().equals("stop")) && !json.keySet().contains(command.getName())) {
-                        getLogger().debug("Removing non-existant command "+command.getName()+" ("+command.getId()+")");
-                        guild.deleteCommandById(command.getId()).queue();
-                    }
-                });
-                json.keySet().forEach(name -> {
-                    String value = json.get(name).getAsString();
-                    getLogger().debug("Adding command "+name);
-                    guild.upsertCommand(name, value.substring(0, Math.min(99, value.length()))).queue();
-                });
-                guild.upsertCommand("remove", "Unregister commands (aj only)").queue();
-                guild.upsertCommand("stop", "Stop the bot (aj only)").queue();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+            Guild guild = jda.getGuildById(615715762912362565L);
+            if(guild == null) {
+                getLogger().warn("aj's plugins guild doesnt exist. not creating commands.");
+                return;
             }
+            CommandListUpdateAction commands = guild.updateCommands();
+            json.keySet().forEach(name -> {
+                String value = json.get(name).getAsString();
+                getLogger().debug("Adding command "+name);
+                commands.addCommands(new CommandData(name, value.substring(0, Math.min(99, value.length()))));
+                //guild.upsertCommand(name, value.substring(0, Math.min(99, value.length()))).queue();
+            });
+            commands.addCommands(new CommandData("remove", "Unregister commands (aj only)"));
+            commands.addCommands(new CommandData("stop", "Stop the bot (aj only)"));
+            commands.addCommands(
+                    new CommandData("reply", "reply to a certain message (aj only)")
+                            .addOption(OptionType.STRING, "message_id", "The message to reply to", true)
+                            .addOption(OptionType.STRING, "response_name", "The response to send (e.g. onlineonly)", true)
+            );
+            commands.queue();
         }).start();
     }
 

@@ -4,6 +4,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
 
@@ -26,16 +28,25 @@ public class CommandListener  extends ListenerAdapter {
         if(name.equals("remove")) {
             e.deferReply(true).queue();
             InteractionHook hook = e.getHook();
+
+            if(!e.getUser().getId().equals("171160105155297282")) {
+                hook.sendMessage("You cant do this!").setEphemeral(true).queue();
+                return;
+            }
+
             Guild guild = e.getGuild();
             if(guild == null) {
                 hook.sendMessage("No guild!").setEphemeral(true).queue();
                 return;
             }
-            if(!e.getUser().getId().equals("171160105155297282")) {
-                hook.sendMessage("You cant do this!").setEphemeral(true).queue();
-                return;
-            }
-            try {
+
+            guild.updateCommands()
+                    .addCommands(new CommandData("remove", "Unregister commands (aj only)"))
+                    .addCommands(new CommandData("stop", "Stop the bot (aj only)"))
+                    .submit().thenRun(() -> hook.sendMessage("Removed the commands!").setEphemeral(true).queue());
+
+
+            /*try {
                 guild.retrieveCommands().submit().get().forEach(command -> {
                     if(!(command.getName().equals("remove") || command.getName().equals("stop"))) {
                         bot.getLogger().debug("Removing command "+command.getName()+" ("+command.getId()+")");
@@ -46,7 +57,7 @@ public class CommandListener  extends ListenerAdapter {
             } catch (InterruptedException | ExecutionException ex) {
                 ex.printStackTrace();
                 hook.sendMessage("An error occurred").setEphemeral(true).queue();
-            }
+            }*/
             return;
         }
         if(name.equals("stop")) {
@@ -60,6 +71,41 @@ public class CommandListener  extends ListenerAdapter {
                 ex.printStackTrace();
             }
             System.exit(0);
+            return;
+        }
+
+        if(name.equals("reply")) {
+            if(!e.getUser().getId().equals("171160105155297282")) {
+                e.reply("You cant do this!").setEphemeral(true).queue();
+                return;
+            }
+
+            OptionMapping messageIdOption = e.getOption("message_id");
+            OptionMapping responseNameOption = e.getOption("response_name");
+            if(messageIdOption == null) {
+                e.reply("Need message ID!").setEphemeral(true).queue();
+                return;
+            }
+            if(responseNameOption == null) {
+                e.reply("Need response name!").setEphemeral(true).queue();
+                return;
+            }
+            long messageId = messageIdOption.getAsLong();
+            String responseName = responseNameOption.getAsString();
+            e.getMessageChannel().retrieveMessageById(messageId).queue(message -> {
+                if(!bot.getJson().keySet().contains(responseName)) {
+                    e.reply("Invalid response name!")
+                            .setEphemeral(true).queue();
+                    return;
+                }
+                logger.debug("Replied with "+responseName);
+                e.reply("Replied with "+responseName+" ;)").setEphemeral(true).queue();
+
+                message.reply(bot.getJson().get(responseName).getAsString()).queue();
+            });
+
+
+
             return;
         }
 
