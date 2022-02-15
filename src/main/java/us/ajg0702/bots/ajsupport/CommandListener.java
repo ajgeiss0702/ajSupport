@@ -30,7 +30,7 @@ public class CommandListener  extends ListenerAdapter {
             InteractionHook hook = e.getHook();
 
             if(!e.getUser().getId().equals("171160105155297282")) {
-                hook.sendMessage("You cant do this!").setEphemeral(true).queue();
+                hook.sendMessage("You can't do this!").setEphemeral(true).queue();
                 return;
             }
 
