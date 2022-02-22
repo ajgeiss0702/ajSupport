@@ -10,7 +10,7 @@ No scripts are available for windows
 ### Mac/linux
 Run:
 ```
-./start-dev <token>
+./start-dev.sh <token>
 ```
 Make sure to replace `<token>` with the token of your test bot.
 
