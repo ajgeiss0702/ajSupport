@@ -15,5 +15,6 @@
   "v2placeholders": "Hello! The placeholders were chaned in ajLeaderboards v2.0.0 in order to add support for timed leaderboards (daily, weekly, monthly, etc)\nIn most cases, you just have to add the `<type>` (which would be alltime, hourly, daily, weekly, or monthly) to the placeholder after the `<number>`\n\nSee the full new placeholders here: https://wiki.ajg0702.us/ajleaderboards/setup/placeholders",
   "pingerdebug": "Hello! When you are having issues with ajqueue not being able to see that a server is online, there is a step you should complete that will help find the issue\nIn the config, change `pinger-debug` to `true`, then do `/ajq reload`.\nNow wait a minute or so, and then send your logs here.",
   "knownfixed": "This is a known issue. It will be fixed in the next update.\nKeep an eye on <#707657644973752322> ;) ",
-  "knownlooking": "This is a known issue, and it is being looked into."
+  "knownlooking": "This is a known issue, and it is being looked into.",
+  "existingtop": "Hello!\nPlease read step 1 here: https://wiki.ajg0702.us/ajleaderboards/setup/setup/#1-figure-out-which-placeholder-to-use \nSpecifically the part that says ⚠️**Important**⚠️"
 }
