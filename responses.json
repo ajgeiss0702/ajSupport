@@ -16,5 +16,6 @@
   "pingerdebug": "Hello! When you are having issues with ajqueue not being able to see that a server is online, there is a step you should complete that will help find the issue\nIn the config, change `pinger-debug` to `true`, then do `/ajq reload`.\nNow wait a minute or so, and then send your logs here.",
   "knownfixed": "This is a known issue. It will be fixed in the next update.\nKeep an eye on <#707657644973752322> ;) ",
   "knownlooking": "This is a known issue, and it is being looked into.",
-  "existingtop": "Hello!\nPlease read step 1 here: https://wiki.ajg0702.us/ajleaderboards/setup/setup/#1-figure-out-which-placeholder-to-use \nSpecifically the part that says ⚠️**Important**⚠️"
+  "existingtop": "Hello!\nPlease read step 1 here: https://wiki.ajg0702.us/ajleaderboards/setup/setup/#1-figure-out-which-placeholder-to-use \nSpecifically the part that says ⚠️**Important**⚠️",
+  "latest": "Please don't just say latest!\nA common issue is that people think they are on the latest version, but they are actually outdated (sometimes extremly outdated)\n\nTo make sure, please send the actual version you are running.\nTo check the version of a plugin, you can use `/version <plugin>`"
 }
