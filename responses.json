@@ -17,5 +17,6 @@
   "knownfixed": "This is a known issue. It will be fixed in the next update.\nKeep an eye on <#707657644973752322> ;) ",
   "knownlooking": "This is a known issue, and it is being looked into.",
   "existingtop": "Hello!\nPlease read step 1 here: https://wiki.ajg0702.us/ajleaderboards/setup/setup/#1-figure-out-which-placeholder-to-use \nSpecifically the part that says ⚠️**Important**⚠️",
-  "latest": "Please don't just say latest!\nA common issue is that people think they are on the latest version, but they are actually outdated (sometimes extremly outdated)\n\nTo make sure, please send the actual version you are running.\nTo check the version of a plugin, you can use `/version <plugin>`"
+  "latest": "Please don't just say latest!\nA common issue is that people think they are on the latest version, but they are actually outdated (sometimes extremly outdated)\n\nTo make sure, please send the actual version you are running.\nTo check the version of a plugin, you can use `/version <plugin>`",
+  "hdv3": "In newer version of HolographicDisplays (since 3.0.0 beta 2), they’ve changed the placeholder format to be non-standard. You either need to use their weird format, use an older version of HolographicDisplays, or switch to another hologram plugin.\n\nIf you switch to another hologram plugin, I recommend DecentHolograms. It also has a command to convert from HolographicDisplays"
 }
