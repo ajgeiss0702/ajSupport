@@ -19,5 +19,6 @@
   "existingtop": "Hello!\nPlease read step 1 here: https://wiki.ajg0702.us/ajleaderboards/setup/setup#1-required-figure-out-which-placeholder-to-use \nSpecifically the part that says ⚠️**Important**⚠️",
   "latest": "Please don't just say latest!\nA common issue is that people think they are on the latest version, but they are actually outdated (sometimes extremly outdated)\n\nTo make sure, please send the actual version you are running.\nTo check the version of a plugin, you can use `/version <plugin>`",
   "hdv3": "In newer version of HolographicDisplays (since 3.0.0 beta 2), they’ve changed the placeholder format to be non-standard. You either need to use their weird format, use an older version of HolographicDisplays, or switch to another hologram plugin.\n\nIf you switch to another hologram plugin, I recommend DecentHolograms. It also has a command to convert from HolographicDisplays",
-  "dontasktoask": "https://dontasktoa.sk/"
+  "dontasktoask": "https://dontasktoa.sk/",
+  "h2": "Please upgrade to h2!\nh2 is like sqlite, but a __lot__ faster.\nTo switch to h2, open `cache_storage.yml` and change `method` to `h2`\nNote that if you do this, you will need to re-add your boards"
 }
