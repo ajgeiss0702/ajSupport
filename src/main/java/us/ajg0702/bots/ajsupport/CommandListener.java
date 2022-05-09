@@ -1,6 +1,8 @@
 package us.ajg0702.bots.ajsupport;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
@@ -98,6 +100,18 @@ public class CommandListener  extends ListenerAdapter {
                             .setEphemeral(true).queue();
                     return;
                 }
+
+                TextChannel channel = bot.getJDA().getTextChannelById(698756204801032202L);
+                if(channel == null) {
+                    bot.getLogger().error("Cannot find logger-log channel for aj's plugins!");
+                    e.reply("Cannot find log channel!").setEphemeral(true).queue();
+                    return;
+                }
+                channel.sendMessageEmbeds(
+                        new EmbedBuilder()
+                                .setDescription("<@"+e.getUser().getId()+"> ran "+e.getCommandString())
+                                .build()
+                ).queue();
                 logger.debug("Replied with "+responseName);
                 e.reply("Replied with "+responseName+" ;)").setEphemeral(true).queue();
 
