@@ -49,11 +49,9 @@ public class MessageListener extends ListenerAdapter {
                     if(System.currentTimeMillis() - last > 15000) {
                         lastHelperMentionWarns.put(e.getChannel().getIdLong(), System.currentTimeMillis());
                         e.getMessage().reply(
-                                        """
-                                                Please don't ping our helpers!
-
-                                                They help out when they're able to, and all pinging does is annoy them.
-                                                In the future, please be patient and wait for a response.""")
+                                "Please don't ping our helpers!\n" +
+                                        "\nThey help out when they're able to, and all pinging does is annoy them.\n" +
+                                        "In the future, please be patient and wait for a response.")
                                 .queue();
                     }
                 }
@@ -63,13 +61,11 @@ public class MessageListener extends ListenerAdapter {
                     lastAjMentionWarns.put(e.getChannel().getIdLong(), System.currentTimeMillis());
                     if(System.currentTimeMillis() - last > 15000) {
                         e.getMessage().reply(
-                                        """
-                                                Please don't ping aj!
-
-                                                aj has all notifications on, so if he will see your message without you needing to ping him.
-                                                Because of that, the only thing that pinging does it annoy him.
-                                                If he doesn't respond, that means he's probably busy. He will respond when he can.
-                                                In the future, please be patient and wait for a response. (without pinging)""")
+                                        "Please don't ping aj!\n" +
+                                                "\naj has all notifications on, so if he will see your message without you needing to ping him.\n" +
+                                                "Because of that, the only thing that pinging does it annoy him.\n" +
+                                                "If he doesn't respond, that means he's probably busy. He will respond when he can.\n" +
+                                                "In the future, please be patient and wait for a response. (without pinging)")
                                 .queue();
                     }
                 }
