@@ -115,7 +115,8 @@ public class CommandListener  extends ListenerAdapter {
                 }
                 channel.sendMessageEmbeds(
                         new EmbedBuilder()
-                                .setDescription("<@"+e.getUser().getId()+"> ran `"+e.getCommandString()+"`")
+                                .setDescription("<@"+e.getUser().getId()+"> ran `"+e.getCommandString()+"`\n" +
+                                        "Reply to "+message.getAuthor().getName()+": "+SupportBot.cutString(message.getContentStripped(), 100))
                                 .build()
                 ).queue();
                 logger.debug("Replied with "+responseName);
