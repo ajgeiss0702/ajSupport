@@ -2,6 +2,8 @@ package us.ajg0702.bots.ajsupport;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -77,7 +79,11 @@ public class CommandListener  extends ListenerAdapter {
         }
 
         if(name.equals("reply")) {
-            if(!e.getUser().getId().equals("171160105155297282")) {
+            if(e.getMember() == null) {
+                e.reply("No member!").setEphemeral(true).queue();
+                return;
+            }
+            if(!e.getUser().getId().equals("171160105155297282") && !hasRole(e.getMember(), 615729338020528128L)) {
                 e.reply("You cant do this!").setEphemeral(true).queue();
                 return;
             }
@@ -131,5 +137,13 @@ public class CommandListener  extends ListenerAdapter {
         logger.debug("SlashCommand "+name);
 
         e.reply(bot.getJson().get(name).getAsString()).queue();
+    }
+
+
+    public boolean hasRole(Member member, long roleId) {
+        for (Role role : member.getRoles()) {
+            if(role.getIdLong() == roleId) return true;
+        }
+        return false;
     }
 }
