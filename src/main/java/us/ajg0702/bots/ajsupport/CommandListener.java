@@ -109,7 +109,7 @@ public class CommandListener  extends ListenerAdapter {
                 }
                 channel.sendMessageEmbeds(
                         new EmbedBuilder()
-                                .setDescription("<@"+e.getUser().getId()+"> ran "+e.getCommandString())
+                                .setTitle("<@"+e.getUser().getId()+"> ran `"+e.getCommandString()+"`")
                                 .build()
                 ).queue();
                 logger.debug("Replied with "+responseName);
