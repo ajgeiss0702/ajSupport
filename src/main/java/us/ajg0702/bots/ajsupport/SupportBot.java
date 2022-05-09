@@ -79,7 +79,7 @@ public class SupportBot {
             json.keySet().forEach(name -> {
                 String value = json.get(name).getAsString();
                 getLogger().debug("Adding command "+name);
-                commands.addCommands(new CommandData(name, value.substring(0, Math.min(99, value.length()))));
+                commands.addCommands(new CommandData(name, cutString(value, 100)));
                 //guild.upsertCommand(name, value.substring(0, Math.min(99, value.length()))).queue();
             });
             commands.addCommands(new CommandData("remove", "Unregister commands (aj only)"));
@@ -91,6 +91,11 @@ public class SupportBot {
             );
             commands.queue();
         }).start();
+    }
+
+    public static String cutString(String string, int length) {
+        if(string.length() < length) return string;
+        return string.substring(0, length-1)+"…";
     }
 
     public JDA getJDA() {
