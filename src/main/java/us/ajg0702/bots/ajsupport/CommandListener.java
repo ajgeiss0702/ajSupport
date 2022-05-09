@@ -84,7 +84,7 @@ public class CommandListener  extends ListenerAdapter {
                 return;
             }
             if(!e.getUser().getId().equals("171160105155297282") && !hasRole(e.getMember(), 615729338020528128L)) {
-                e.reply("You cant do this!").setEphemeral(true).queue();
+                e.reply("You can't do this!").setEphemeral(true).queue();
                 return;
             }
 
@@ -100,12 +100,12 @@ public class CommandListener  extends ListenerAdapter {
             }
             long messageId = messageIdOption.getAsLong();
             String responseName = responseNameOption.getAsString();
+            if(!bot.getJson().keySet().contains(responseName)) {
+                e.reply("Invalid response name!")
+                        .setEphemeral(true).queue();
+                return;
+            }
             e.getMessageChannel().retrieveMessageById(messageId).queue(message -> {
-                if(!bot.getJson().keySet().contains(responseName)) {
-                    e.reply("Invalid response name!")
-                            .setEphemeral(true).queue();
-                    return;
-                }
 
                 TextChannel channel = bot.getJDA().getTextChannelById(698756204801032202L);
                 if(channel == null) {
