@@ -146,7 +146,7 @@ public class CommandListener  extends ListenerAdapter {
     }
 
 
-    public boolean hasRole(Member member, long roleId) {
+    public static boolean hasRole(Member member, long roleId) {
         for (Role role : member.getRoles()) {
             if(role.getIdLong() == roleId) return true;
         }
