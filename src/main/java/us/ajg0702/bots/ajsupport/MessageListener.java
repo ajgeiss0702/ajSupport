@@ -44,7 +44,14 @@ public class MessageListener extends ListenerAdapter {
             }
         }
 
-        if(!e.getAuthor().isBot() && e.getTextChannel().getParentCategoryIdLong() == 804502763547000893L) {
+        if(e.getMember() == null) return;
+
+        if(
+                !e.getAuthor().isBot() &&
+                e.getTextChannel().getParentCategoryIdLong() == 804502763547000893L &&
+                !hasRole(e.getMember(), 615729338020528128L) &&
+                !hasRole(e.getMember(), 615721804585107477L)
+        ) {
             for (Member mentionedMember : e.getMessage().getMentionedMembers()) {
                 if(hasRole(mentionedMember, 615729338020528128L) || hasRole(mentionedMember, 859784384739278928L)  && e.getMessage().getMessageReference() == null) {
                     Long last = lastHelperMentionWarns.getOrDefault(e.getChannel().getIdLong(), 0L);
