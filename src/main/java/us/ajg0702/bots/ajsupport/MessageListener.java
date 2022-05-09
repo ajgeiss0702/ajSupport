@@ -2,6 +2,8 @@ package us.ajg0702.bots.ajsupport;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageReference;
+import net.dv8tion.jda.api.entities.SelfUser;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -42,9 +44,9 @@ public class MessageListener extends ListenerAdapter {
             }
         }
 
-        if(e.getTextChannel().getParentCategoryIdLong() == 804502763547000893L) {
+        if(!e.getAuthor().isBot() && e.getTextChannel().getParentCategoryIdLong() == 804502763547000893L) {
             for (Member mentionedMember : e.getMessage().getMentionedMembers()) {
-                if(hasRole(mentionedMember, 615729338020528128L) || hasRole(mentionedMember, 859784384739278928L)) {
+                if(hasRole(mentionedMember, 615729338020528128L) || hasRole(mentionedMember, 859784384739278928L)  && e.getMessage().getMessageReference() == null) {
                     Long last = lastHelperMentionWarns.getOrDefault(e.getChannel().getIdLong(), 0L);
                     if(System.currentTimeMillis() - last > 15000) {
                         lastHelperMentionWarns.put(e.getChannel().getIdLong(), System.currentTimeMillis());
@@ -56,7 +58,7 @@ public class MessageListener extends ListenerAdapter {
                     }
                 }
 
-                if(hasRole(mentionedMember, 615721804585107477L)) {
+                if(hasRole(mentionedMember, 615721804585107477L) && e.getMessage().getMessageReference() == null) {
                     Long last = lastAjMentionWarns.getOrDefault(e.getChannel().getIdLong(), 0L);
                     lastAjMentionWarns.put(e.getChannel().getIdLong(), System.currentTimeMillis());
                     if(System.currentTimeMillis() - last > 15000) {
