@@ -5,11 +5,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
 
@@ -25,7 +25,7 @@ public class CommandListener  extends ListenerAdapter {
     }
 
     @Override
-    public void onSlashCommand(SlashCommandEvent e) {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent e) {
         String name = e.getName();
 
 
@@ -45,8 +45,8 @@ public class CommandListener  extends ListenerAdapter {
             }
 
             guild.updateCommands()
-                    .addCommands(new CommandData("remove", "Unregister commands (aj only)"))
-                    .addCommands(new CommandData("stop", "Stop the bot (aj only)"))
+                    .addCommands(Commands.slash("remove", "Unregister commands (aj only)"))
+                    .addCommands(Commands.slash("stop", "Stop the bot (aj only)"))
                     .submit().thenRun(() -> hook.sendMessage("Removed the commands!").setEphemeral(true).queue());
 
 

@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
@@ -79,13 +80,14 @@ public class SupportBot {
             json.keySet().forEach(name -> {
                 String value = json.get(name).getAsString();
                 getLogger().debug("Adding command "+name);
-                commands.addCommands(new CommandData(name, cutString(value, 100)));
+
+                commands.addCommands(Commands.slash(name, cutString(value, 100)));
                 //guild.upsertCommand(name, value.substring(0, Math.min(99, value.length()))).queue();
             });
-            commands.addCommands(new CommandData("remove", "Unregister commands (aj only)"));
-            commands.addCommands(new CommandData("stop", "Stop the bot (aj only)"));
             commands.addCommands(
-                    new CommandData("reply", "reply to a certain message (aj only)")
+                    Commands.slash("remove", "Unregister commands (aj only)"),
+                    Commands.slash("stop", "Stop the bot (aj only)"),
+                    Commands.slash("reply", "reply to a certain message (aj only)")
                             .addOption(OptionType.STRING, "message_id", "The message to reply to", true)
                             .addOption(OptionType.STRING, "response_name", "The response to send (e.g. onlineonly)", true)
             );

@@ -2,12 +2,10 @@ package us.ajg0702.bots.ajsupport;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageReference;
-import net.dv8tion.jda.api.entities.SelfUser;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -52,7 +50,7 @@ public class MessageListener extends ListenerAdapter {
                 !hasRole(e.getMember(), 615729338020528128L) &&
                 !hasRole(e.getMember(), 615721804585107477L)
         ) {
-            for (Member mentionedMember : e.getMessage().getMentionedMembers()) {
+            for (Member mentionedMember : e.getMessage().getMentions().getMembers()) {
                 if(hasRole(mentionedMember, 615729338020528128L) || hasRole(mentionedMember, 859784384739278928L)  && e.getMessage().getMessageReference() == null) {
                     Long last = lastHelperMentionWarns.getOrDefault(e.getChannel().getIdLong(), 0L);
                     if(System.currentTimeMillis() - last > 15000) {
@@ -83,7 +81,7 @@ public class MessageListener extends ListenerAdapter {
     }
 
     @Override
-    public void onButtonClick(ButtonClickEvent e) {
+    public void onButtonInteraction(ButtonInteractionEvent e) {
         if (e.getComponentId().equals("why_pastesite")) {
             e.reply("You should use a paste site when sending files for one simple reason:\n It's easier to help you.\n\naj replies to many messages when all he has is his phone. Discord doesnt preview text files on phones (at least not yet), so he would have to download the file to be able to view it (which is a hassle, and a waste of space).\nIf you want aj to be able to help you, please use a paste site (e.g. https://paste.ajg0702.us/ ).")
                     .setEphemeral(true).queue();
