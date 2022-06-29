@@ -28,6 +28,8 @@ public class CommandListener  extends ListenerAdapter {
     public void onSlashCommandInteraction(SlashCommandInteractionEvent e) {
         String name = e.getName();
 
+        logger.info("Running command login for "+name);
+
 
         if(name.equals("remove")) {
             e.deferReply(true).queue();
@@ -105,32 +107,16 @@ public class CommandListener  extends ListenerAdapter {
                         .setEphemeral(true).queue();
                 return;
             }
-            e.getMessageChannel().retrieveMessageById(messageId).queue(message -> {
 
-                TextChannel channel = bot.getJDA().getTextChannelById(698756204801032202L);
-                if(channel == null) {
-                    bot.getLogger().error("Cannot find logger-log channel for aj's plugins!");
-                    e.reply("Cannot find log channel!").setEphemeral(true).queue();
+            e.getMessageChannel().retrieveMessageById(messageId).queue(message -> {
+                try {
+                    bot.reply(message, e.getUser(), responseName);
+                } catch (EchoException ex) {
+                    e.reply(ex.getMessage()).setEphemeral(true).queue();
                     return;
                 }
-                channel.sendMessageEmbeds(
-                        new EmbedBuilder()
-                                .setDescription("<@"+e.getUser().getId()+"> ran `"+e.getCommandString()+"`\n" +
-                                        "Reply to "+message.getAuthor().getName()+": " +
-                                        SupportBot.cutString(
-                                                message.getContentStripped().replaceAll("\n", " "),
-                                                100
-                                        )
-                                )
-                                .build()
-                ).queue();
-                logger.debug("Replied with "+responseName);
-                e.reply("Replied with "+responseName+" ;)").setEphemeral(true).queue();
-
-                message.reply(bot.getJson().get(responseName).getAsString()).queue();
+                e.reply("Replied with "+responseName+"! :)").setEphemeral(true).queue();
             });
-
-
 
             return;
         }
