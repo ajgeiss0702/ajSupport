@@ -1,7 +1,6 @@
 package us.ajg0702.bots.ajsupport;
 
 import com.google.gson.JsonElement;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
