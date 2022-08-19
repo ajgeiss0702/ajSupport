@@ -29,6 +29,35 @@ public class CommandListener  extends ListenerAdapter {
         String name = e.getName();
 
 
+        if(name.equals("ticketban")) {
+            e.deferReply(true).queue();
+            InteractionHook hook = e.getHook().setEphemeral(true);
+
+            if(!e.getUser().getId().equals("171160105155297282")) {
+                hook.sendMessage("You can't do this!").setEphemeral(true).queue();
+                return;
+            }
+
+            OptionMapping userOption = e.getOption("user");
+            OptionMapping reasonOption = e.getOption("reason");
+            if(userOption == null) {
+                e.reply("Need user to ban!").setEphemeral(true).queue();
+                return;
+            }
+
+            userOption.getAsUser().openPrivateChannel().queue(privateChannel -> {
+                try {
+                    String reason = reasonOption == null ? "" : "Reason: " + reasonOption.getAsString();
+                    privateChannel.sendMessage(
+                            "You have been banned from creating new tickets in `aj's Plugins`. " + reason
+                    ).queue();
+                    hook.sendMessage("Sent DM.").queue();
+                } catch(Exception error) {
+                    hook.sendMessage("An error occurred while DMing user: " + error.getMessage()).queue();
+                }
+            });
+
+        }
         if(name.equals("remove")) {
             e.deferReply(true).queue();
             InteractionHook hook = e.getHook();

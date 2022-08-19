@@ -89,6 +89,11 @@ public class SupportBot {
                             .addOption(OptionType.STRING, "message_id", "The message to reply to", true)
                             .addOption(OptionType.STRING, "response_name", "The response to send (e.g. onlineonly)", true)
             );
+            commands.addCommands(
+                    new CommandData("ticketban", "Ban someone from creating tickets (aj only)")
+                            .addOption(OptionType.USER, "user", "The user to ban", true)
+                            .addOption(OptionType.STRING, "reason", "The ban reason", false)
+            );
             commands.queue();
         }).start();
     }
