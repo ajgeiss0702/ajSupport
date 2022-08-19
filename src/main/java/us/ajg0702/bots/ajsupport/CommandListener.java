@@ -5,11 +5,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
 
@@ -25,8 +25,10 @@ public class CommandListener  extends ListenerAdapter {
     }
 
     @Override
-    public void onSlashCommand(SlashCommandEvent e) {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent e) {
         String name = e.getName();
+
+        logger.info("Running command login for "+name);
 
 
         if(name.equals("ticketban")) {
@@ -74,8 +76,8 @@ public class CommandListener  extends ListenerAdapter {
             }
 
             guild.updateCommands()
-                    .addCommands(new CommandData("remove", "Unregister commands (aj only)"))
-                    .addCommands(new CommandData("stop", "Stop the bot (aj only)"))
+                    .addCommands(Commands.slash("remove", "Unregister commands (aj only)"))
+                    .addCommands(Commands.slash("stop", "Stop the bot (aj only)"))
                     .submit().thenRun(() -> hook.sendMessage("Removed the commands!").setEphemeral(true).queue());
 
 
@@ -134,32 +136,16 @@ public class CommandListener  extends ListenerAdapter {
                         .setEphemeral(true).queue();
                 return;
             }
-            e.getMessageChannel().retrieveMessageById(messageId).queue(message -> {
 
-                TextChannel channel = bot.getJDA().getTextChannelById(698756204801032202L);
-                if(channel == null) {
-                    bot.getLogger().error("Cannot find logger-log channel for aj's plugins!");
-                    e.reply("Cannot find log channel!").setEphemeral(true).queue();
+            e.getMessageChannel().retrieveMessageById(messageId).queue(message -> {
+                try {
+                    bot.reply(message, e.getUser(), responseName);
+                } catch (EchoException ex) {
+                    e.reply(ex.getMessage()).setEphemeral(true).queue();
                     return;
                 }
-                channel.sendMessageEmbeds(
-                        new EmbedBuilder()
-                                .setDescription("<@"+e.getUser().getId()+"> ran `"+e.getCommandString()+"`\n" +
-                                        "Reply to "+message.getAuthor().getName()+": " +
-                                        SupportBot.cutString(
-                                                message.getContentStripped().replaceAll("\n", " "),
-                                                100
-                                        )
-                                )
-                                .build()
-                ).queue();
-                logger.debug("Replied with "+responseName);
-                e.reply("Replied with "+responseName+" ;)").setEphemeral(true).queue();
-
-                message.reply(bot.getJson().get(responseName).getAsString()).queue();
+                e.reply("Replied with "+responseName+"! :)").setEphemeral(true).queue();
             });
-
-
 
             return;
         }

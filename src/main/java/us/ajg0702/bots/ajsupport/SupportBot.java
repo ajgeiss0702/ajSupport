@@ -2,11 +2,16 @@ package us.ajg0702.bots.ajsupport;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
@@ -42,7 +47,7 @@ public class SupportBot {
 
         JDA jda = bot.getJDA();
         jda.addEventListener(new CommandListener(bot), new InviteListener(bot), new ReactionRoleListener(bot),
-                new MessageListener(bot));
+                new MessageListener(bot), new ContextListener(bot));
 
         //jda.upsertCommand("aping", "ping pong").queue();
         //Objects.requireNonNull()).upsertCommand("agping", "ping pong (guild").queue();
@@ -79,15 +84,17 @@ public class SupportBot {
             json.keySet().forEach(name -> {
                 String value = json.get(name).getAsString();
                 getLogger().debug("Adding command "+name);
-                commands.addCommands(new CommandData(name, cutString(value, 100)));
+
+                commands.addCommands(Commands.slash(name, cutString(value, 100)));
                 //guild.upsertCommand(name, value.substring(0, Math.min(99, value.length()))).queue();
             });
-            commands.addCommands(new CommandData("remove", "Unregister commands (aj only)"));
-            commands.addCommands(new CommandData("stop", "Stop the bot (aj only)"));
             commands.addCommands(
-                    new CommandData("reply", "reply to a certain message (aj only)")
+                    Commands.slash("remove", "Unregister commands (aj only)"),
+                    Commands.slash("stop", "Stop the bot (aj only)"),
+                    Commands.slash("reply", "reply to a certain message (aj only)")
                             .addOption(OptionType.STRING, "message_id", "The message to reply to", true)
-                            .addOption(OptionType.STRING, "response_name", "The response to send (e.g. onlineonly)", true)
+                            .addOption(OptionType.STRING, "response_name", "The response to send (e.g. onlineonly)", true),
+                    Commands.message("Reply")
             );
             commands.addCommands(
                     new CommandData("ticketban", "Ban someone from creating tickets (aj only)")
@@ -113,5 +120,27 @@ public class SupportBot {
 
     public JsonObject getJson() {
         return json;
+    }
+
+    public void reply(Message message, User user, String key) throws EchoException {
+        TextChannel channel = getJDA().getTextChannelById(698756204801032202L);
+        if(channel == null) {
+            getLogger().error("Cannot find logger-log channel for aj's plugins!");
+            throw new EchoException("Cannot find log channel!");
+        }
+        channel.sendMessageEmbeds(
+                new EmbedBuilder()
+                        .setDescription("<@"+user.getId()+"> is replying\n" +
+                                "Reply to "+message.getAuthor().getName()+": " +
+                                SupportBot.cutString(
+                                        message.getContentStripped().replaceAll("\n", " "),
+                                        100
+                                )
+                        )
+                        .build()
+        ).queue();
+        logger.debug("Replied with "+key);
+
+        message.reply(getJson().get(key).getAsString()).queue();
     }
 }

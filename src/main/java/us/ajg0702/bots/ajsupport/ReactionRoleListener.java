@@ -25,7 +25,7 @@ public class ReactionRoleListener extends ListenerAdapter {
             Member member = e.retrieveMember().submit().get();
             Role role = e.getGuild().getRoleById(712797305723682867L);
             assert role != null;
-            e.getGuild().addRoleToMember(member.getId(), role).queue();
+            e.getGuild().addRoleToMember(member, role).queue();
             bot.getLogger().debug(user.getAsTag()+" added reaction");
         } catch (InterruptedException | ExecutionException ex) {
             ex.printStackTrace();
@@ -40,7 +40,7 @@ public class ReactionRoleListener extends ListenerAdapter {
             Member member = e.retrieveMember().submit().get();
             Role role = e.getGuild().getRoleById(712797305723682867L);
             assert role != null;
-            e.getGuild().removeRoleFromMember(member.getId(), role).queue();
+            e.getGuild().removeRoleFromMember(member, role).queue();
             bot.getLogger().debug(user.getAsTag()+" removed reaction");
         } catch (InterruptedException | ExecutionException ex) {
             ex.printStackTrace();
