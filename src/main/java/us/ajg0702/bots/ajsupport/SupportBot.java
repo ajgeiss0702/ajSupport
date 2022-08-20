@@ -97,7 +97,7 @@ public class SupportBot {
                     Commands.message("Reply")
             );
             commands.addCommands(
-                    new CommandData("ticketban", "Ban someone from creating tickets (aj only)")
+                    Commands.slash("ticketban", "Ban someone from creating tickets (aj only)")
                             .addOption(OptionType.USER, "user", "The user to ban", true)
                             .addOption(OptionType.STRING, "reason", "The ban reason", false)
             );
