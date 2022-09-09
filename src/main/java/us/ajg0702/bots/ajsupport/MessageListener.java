@@ -69,8 +69,8 @@ public class MessageListener extends ListenerAdapter {
                     if(System.currentTimeMillis() - last > 15000) {
                         e.getMessage().reply(
                                         "Please don't ping aj!\n" +
-                                                "\naj has all notifications on, so if he will see your message without you needing to ping him.\n" +
-                                                "Because of that, the only thing that pinging does it annoy him.\n" +
+                                                "\naj has all notifications on, so he will see your message without you needing to ping him.\n" +
+                                                "Because of that, the only thing that pinging does is annoy him.\n" +
                                                 "If he doesn't respond, that means he's probably busy. He will respond when he can.\n" +
                                                 "In the future, please be patient and wait for a response. (without pinging)")
                                 .queue();
