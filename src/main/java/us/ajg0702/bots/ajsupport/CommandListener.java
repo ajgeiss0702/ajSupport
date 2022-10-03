@@ -51,7 +51,7 @@ public class CommandListener  extends ListenerAdapter {
                 try {
                     String reason = reasonOption == null ? "" : "Reason: " + reasonOption.getAsString();
                     privateChannel.sendMessage(
-                            "You have been banned from creating new tickets in `aj's Plugins`.\n" + reason + "\nIf you are confused why, make sure to read the reas, and the text in the create-ticket channel."
+                            "You have been banned from creating new tickets in `aj's Plugins`.\n" + reason + "\nIf you are confused why, make sure to read the above reason, and the text in the <#804502842165297253> channel."
                     ).queue();
                     hook.sendMessage("Sent DM.").queue();
                 } catch(Exception error) {
