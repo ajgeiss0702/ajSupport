@@ -1,5 +1,7 @@
 package us.ajg0702.bots.ajsupport;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -15,7 +17,16 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
 import static us.ajg0702.bots.ajsupport.CommandListener.hasRole;
 
@@ -41,10 +52,58 @@ public class MessageListener extends ListenerAdapter {
                 String ext = attachment.getFileExtension();
                 if(ext == null) continue;
                 if(TEXT_EXTENSIONS.contains(ext.toLowerCase(Locale.ROOT))) {
-                    e.getMessage().reply("Please use https://paste.ajg0702.us/ to send text files!")
-                            .setActionRow(Button.secondary("why_pastesite", "Why?"))
-                            .queue();
-                    break;
+                    URL url;
+                    try {
+                        url = new URL("https://paste.ajg0702.us/post");
+                    } catch (MalformedURLException err) {
+                        bot.getLogger().error("An error occurred while uploading text file:", err);
+                        e.getMessage().reply("Please use https://paste.ajg0702.us/ to send text files!")
+                                .setActionRow(Button.secondary("why_pastesite", "Why?"))
+                                .queue();
+                        return;
+                    }
+
+                    try {
+                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+                        con.setRequestMethod("POST");
+                        con.setRequestProperty("User-Agent", "ajSupport/1.0.0");
+                        con.setRequestProperty("Content-Type", attachment.getContentType());
+                        bot.getLogger().info("Sending with " + attachment.getContentType());
+                        con.setDoOutput(true);
+
+                        try (OutputStream os = con.getOutputStream()) {
+                            InputStream inputStream = attachment.getProxy().download().get(15, TimeUnit.SECONDS);
+                            byte[] input = inputStream.readAllBytes();
+                            os.write(input, 0, input.length);
+                        }
+
+                        try (BufferedReader br = new BufferedReader(
+                                new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+                            StringBuilder response = new StringBuilder();
+                            String responseLine;
+                            while ((responseLine = br.readLine()) != null) {
+                                response.append(responseLine.trim());
+                            }
+
+                            JsonObject responseJson = new Gson().fromJson(response.toString(), JsonObject.class);
+
+                            e.getMessage()
+                                    .reply(
+                                            "I've uploaded that for you: https://paste.ajg0702.us/" +
+                                                    responseJson.get("key").getAsString()
+                                    )
+                                    .setActionRow(Button.secondary("why_pastesite", "Why?"))
+                                    .queue();
+                        }
+                        break;
+                    } catch (IOException | ExecutionException | InterruptedException | TimeoutException err) {
+                        bot.getLogger().error("An error occurred while uploading text file:", err);
+                        e.getMessage().reply("Please use https://paste.ajg0702.us/ to send text files!")
+                                .setActionRow(Button.secondary("why_pastesite", "Why?"))
+                                .queue();
+                        return;
+                    }
                 }
             }
         }
