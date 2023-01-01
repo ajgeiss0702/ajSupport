@@ -52,6 +52,7 @@ public class MessageListener extends ListenerAdapter {
                 String ext = attachment.getFileExtension();
                 if(ext == null) continue;
                 if(TEXT_EXTENSIONS.contains(ext.toLowerCase(Locale.ROOT))) {
+                    e.getChannel().sendTyping().queue();
                     URL url;
                     try {
                         url = new URL("https://paste.ajg0702.us/post");
