@@ -2,6 +2,13 @@ package us.ajg0702.bots.ajsupport;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.attribute.ICategorizableChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.unions.IThreadContainerUnion;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
+import net.dv8tion.jda.api.events.channel.forum.ForumTagAddEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -44,11 +51,23 @@ public class MessageListener extends ListenerAdapter {
 
         if(e.getMember() == null) return;
 
+        MessageChannelUnion channel = e.getChannel();
+        long parent = channel instanceof ICategorizableChannel ? ((ICategorizableChannel) channel).getParentCategoryIdLong() : -1;
+
+        if(channel.getType().isThread()) {
+            IThreadContainerUnion threadParent = channel.asThreadChannel().getParentChannel();
+            parent = threadParent instanceof ICategorizableChannel ?
+                    ((ICategorizableChannel) threadParent).getParentCategoryIdLong() : -2;
+        }
+
+        bot.getLogger().info("parent is " + parent);
+
         if(
+
                 !e.getAuthor().isBot() &&
-                e.getTextChannel().getParentCategoryIdLong() == 804502763547000893L &&
-                !hasRole(e.getMember(), 615729338020528128L) &&
-                !hasRole(e.getMember(), 615721804585107477L)
+                parent == 804502763547000893L && // only in support channels
+                !hasRole(e.getMember(), 615729338020528128L) && // exclude helpers
+                !hasRole(e.getMember(), 615721804585107477L) // exclude @aj
         ) {
             for (Member mentionedMember : e.getMessage().getMentions().getMembers()) {
                 if(hasRole(mentionedMember, 615729338020528128L) || hasRole(mentionedMember, 859784384739278928L)  && e.getMessage().getMessageReference() == null) {

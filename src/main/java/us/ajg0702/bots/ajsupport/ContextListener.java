@@ -3,9 +3,9 @@ package us.ajg0702.bots.ajsupport;
 import com.google.gson.JsonElement;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -28,7 +28,7 @@ public class ContextListener extends ListenerAdapter {
             e.reply("You can't do this!").setEphemeral(true).queue();
             return;
         }
-        SelectMenu.Builder selectMenuBuilder = SelectMenu.create("reply-message");
+        StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create("reply-message");
 
         for (Map.Entry<String, JsonElement> entry : bot.getJson().entrySet()) {
             String name = entry.getKey();
@@ -41,7 +41,7 @@ public class ContextListener extends ListenerAdapter {
     }
 
     @Override
-    public void onSelectMenuInteraction(@NotNull SelectMenuInteractionEvent e) {
+    public void onStringSelectInteraction(StringSelectInteractionEvent e) {
         if(!e.getComponentId().equals("reply-message")) return;
 
         String key = e.getValues().get(0);

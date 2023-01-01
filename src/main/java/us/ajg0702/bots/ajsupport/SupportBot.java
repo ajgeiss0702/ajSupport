@@ -5,12 +5,13 @@ import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
@@ -37,9 +38,11 @@ public class SupportBot {
             bot = new SupportBot(builder
                     .setAutoReconnect(true)
                     .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_INVITES,
-                            GatewayIntent.GUILD_MESSAGE_REACTIONS)
+                            GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                            GatewayIntent.MESSAGE_CONTENT,
+                            GatewayIntent.GUILD_MESSAGES)
                     .build());
-        } catch (LoginException e) {
+        } catch (InterruptedException | InvalidTokenException | IllegalArgumentException e) {
             e.printStackTrace();
             System.exit(1);
             return;
