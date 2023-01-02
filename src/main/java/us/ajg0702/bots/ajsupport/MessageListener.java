@@ -53,18 +53,9 @@ public class MessageListener extends ListenerAdapter {
                 if(ext == null) continue;
                 if(TEXT_EXTENSIONS.contains(ext.toLowerCase(Locale.ROOT))) {
                     e.getChannel().sendTyping().queue();
-                    URL url;
-                    try {
-                        url = new URL("https://paste.ajg0702.us/post");
-                    } catch (MalformedURLException err) {
-                        bot.getLogger().error("An error occurred while uploading text file:", err);
-                        e.getMessage().reply("Please use https://paste.ajg0702.us/ to send text files!")
-                                .setActionRow(Button.secondary("why_pastesite", "Why?"))
-                                .queue();
-                        return;
-                    }
 
                     try {
+                        URL url = new URL("https://paste.ajg0702.us/post");
                         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
                         con.setRequestMethod("POST");
