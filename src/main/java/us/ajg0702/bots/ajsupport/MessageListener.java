@@ -37,7 +37,7 @@ public class MessageListener extends ListenerAdapter {
         this.bot = bot;
     }
 
-    private static final List<String> TEXT_EXTENSIONS = Arrays.asList("txt", "yml", "log", "yaml", "json", "js");
+    private static final List<String> TEXT_EXTENSIONS = Arrays.asList("txt", "yml", "log", "yaml", "json", "js", "log.gz");
 
     private final Map<Long, Long> lastHelperMentionWarns = new HashMap<>();
     private final Map<Long, Long> lastAjMentionWarns = new HashMap<>();
@@ -49,9 +49,13 @@ public class MessageListener extends ListenerAdapter {
         if(attachments.size() > 0) {
             bot.getLogger().debug("Message has attachments");
             for(Message.Attachment attachment : attachments) {
+                String fileName = attachment.getFileName();
                 String ext = attachment.getFileExtension();
+                String allExt = fileName.substring(fileName.indexOf(".") + 1);
                 if(ext == null) continue;
-                if(TEXT_EXTENSIONS.contains(ext.toLowerCase(Locale.ROOT))) {
+                ext = ext.toLowerCase(Locale.ROOT);
+                allExt = allExt.toLowerCase(Locale.ROOT);
+                if(TEXT_EXTENSIONS.contains(ext) || TEXT_EXTENSIONS.contains(allExt)) {
                     e.getChannel().sendTyping().queue();
 
                     try {
@@ -60,8 +64,15 @@ public class MessageListener extends ListenerAdapter {
 
                         con.setRequestMethod("POST");
                         con.setRequestProperty("User-Agent", "ajSupport/1.0.0");
-                        con.setRequestProperty("Content-Type", attachment.getContentType());
-                        bot.getLogger().info("Sending with " + attachment.getContentType());
+                        if(attachment.getContentType() != null) {
+                            con.setRequestProperty("Content-Type", attachment.getContentType());
+                        } else {
+                            con.setRequestProperty("Content-Type", "text/plain");
+                        }
+                        if(ext.equalsIgnoreCase("gz")) {
+                            con.setRequestProperty("Content-Encoding", "gzip");
+                        }
+                        bot.getLogger().info("Sending with " + con.getRequestProperty("Content-Type"));
                         con.setDoOutput(true);
 
                         try (OutputStream os = con.getOutputStream()) {
