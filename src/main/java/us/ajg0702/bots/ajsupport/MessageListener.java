@@ -59,50 +59,17 @@ public class MessageListener extends ListenerAdapter {
                     e.getChannel().sendTyping().queue();
 
                     try {
-                        URL url = new URL("https://paste.ajg0702.us/post");
-                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
-                        con.setRequestMethod("POST");
-                        con.setRequestProperty("User-Agent", "ajSupport/1.0.0");
-                        if(attachment.getContentType() != null) {
-                            con.setRequestProperty("Content-Type", attachment.getContentType());
-                        } else {
-                            con.setRequestProperty("Content-Type", "text/plain");
-                        }
-                        if(ext.equalsIgnoreCase("gz")) {
-                            con.setRequestProperty("Content-Encoding", "gzip");
-                        }
-                        bot.getLogger().info("Sending with " + con.getRequestProperty("Content-Type"));
-                        con.setDoOutput(true);
-
-                        try (OutputStream os = con.getOutputStream()) {
-                            InputStream inputStream = attachment.getProxy().download().get(15, TimeUnit.SECONDS);
-                            byte[] input = inputStream.readAllBytes();
-                            os.write(input, 0, input.length);
-                        }
-
-                        try (BufferedReader br = new BufferedReader(
-                                new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-                            StringBuilder response = new StringBuilder();
-                            String responseLine;
-                            while ((responseLine = br.readLine()) != null) {
-                                response.append(responseLine.trim());
-                            }
-
-                            JsonObject responseJson = new Gson().fromJson(response.toString(), JsonObject.class);
-
-                            e.getMessage()
-                                    .reply(
-                                            "I've uploaded that for you: https://paste.ajg0702.us/" +
-                                                    responseJson.get("key").getAsString()
-                                    )
-                                    .setActionRow(Button.secondary("why_pastesite", "Why?"))
-                                    .queue();
-                        }
+                        String url = Utils.uploadAttachment(bot, attachment);
+                        e.getMessage()
+                                .reply(
+                                        "I've uploaded that for you: " + url
+                                )
+                                .setActionRow(Button.secondary("why_pastesite", "Why?"))
+                                .queue();
                         break;
                     } catch (IOException | ExecutionException | InterruptedException | TimeoutException err) {
                         bot.getLogger().error("An error occurred while uploading text file:", err);
-                        e.getMessage().reply("Please use https://paste.ajg0702.us/ to send text files!")
+                        e.getMessage().reply("Please use https://paste.ajg0702.us/ to send text files!\n(Normally I would upload it automatically, but something went wrong)")
                                 .setActionRow(Button.secondary("why_pastesite", "Why?"))
                                 .queue();
                         return;

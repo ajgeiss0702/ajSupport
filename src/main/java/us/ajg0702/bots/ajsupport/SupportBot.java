@@ -97,6 +97,8 @@ public class SupportBot {
                     Commands.slash("reply", "reply to a certain message (aj only)")
                             .addOption(OptionType.STRING, "message_id", "The message to reply to", true)
                             .addOption(OptionType.STRING, "response_name", "The response to send (e.g. onlineonly)", true),
+                    Commands.slash("upload", "Upload the first attachment from a message to the paste site (aj only)")
+                            .addOption(OptionType.STRING, "message_id", "The message to get attachments from", true),
                     Commands.message("Reply")
             );
             commands.addCommands(

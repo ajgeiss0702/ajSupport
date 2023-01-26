@@ -2,6 +2,7 @@ package us.ajg0702.bots.ajsupport;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -11,7 +12,9 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public class CommandListener  extends ListenerAdapter {
     private final SupportBot bot;
@@ -41,7 +44,7 @@ public class CommandListener  extends ListenerAdapter {
             OptionMapping userOption = e.getOption("user");
             OptionMapping reasonOption = e.getOption("reason");
             if(userOption == null) {
-                e.reply("Need user to ban!").setEphemeral(true).queue();
+                hook.sendMessage("Need user to ban!").setEphemeral(true).queue();
                 return;
             }
 
@@ -57,6 +60,41 @@ public class CommandListener  extends ListenerAdapter {
                 }
             });
 
+        }
+        if(name.equals("upload")) {
+            e.deferReply(true).queue();
+            InteractionHook hook = e.getHook().setEphemeral(true);
+
+            if(!e.getUser().getId().equals("171160105155297282")) {
+                hook.sendMessage("You can't do this!").setEphemeral(true).queue();
+                return;
+            }
+
+            OptionMapping messageOption = e.getOption("message_id");
+            if(messageOption == null) {
+                hook.sendMessage("Need message to get attachments from!").setEphemeral(true).queue();
+                return;
+            }
+
+            long messageId = messageOption.getAsLong();
+
+            e.getMessageChannel().retrieveMessageById(messageId).queue(message -> {
+                if(message.getAttachments().size() == 0) {
+                    hook.sendMessage("That message has no attachments!").queue();
+                    return;
+                }
+                for (Message.Attachment attachment : message.getAttachments()) {
+                    try {
+                        String url = Utils.uploadAttachment(bot, attachment);
+                        hook.sendMessage("Uploaded! " + url).setEphemeral(true).queue();
+                        message.reply("I've uploaded that for you: " + url).queue();
+                        break;
+                    } catch (IOException | ExecutionException | InterruptedException | TimeoutException ex) {
+                        bot.getLogger().warn("Failed to upload file:", ex);
+                    }
+                }
+            });
+            return;
         }
         if(name.equals("remove")) {
             e.deferReply(true).queue();
