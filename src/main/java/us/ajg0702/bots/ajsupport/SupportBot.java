@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
+import us.ajg0702.bots.ajsupport.autorespond.AutoRespondManager;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -75,6 +76,7 @@ public class SupportBot {
             return;
         }
         json = new Gson().fromJson(jsonRaw.toString(), JsonObject.class);
+        jda.addEventListener(new AutoRespondManager(json));
 
 
         new Thread(() -> {
