@@ -17,7 +17,9 @@ public class OnlineOnlyResponse extends Responder {
             "only show people who are online",
             "only has online players",
             "only has online people",
-            "only have online"
+            "only have online",
+            "only shows on person",
+            "only shows one person"
     );
     @Override
     public Response checkForResponse(Member author, Message message) {
