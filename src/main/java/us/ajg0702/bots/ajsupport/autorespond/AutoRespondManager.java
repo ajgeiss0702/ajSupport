@@ -6,10 +6,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import us.ajg0702.bots.ajsupport.autorespond.responders.BDNEResponder;
-import us.ajg0702.bots.ajsupport.autorespond.responders.EmptyLBResponder;
-import us.ajg0702.bots.ajsupport.autorespond.responders.OnlineOnlyResponse;
-import us.ajg0702.bots.ajsupport.autorespond.responders.TestResponder;
+import us.ajg0702.bots.ajsupport.autorespond.responders.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +19,8 @@ public class AutoRespondManager extends ListenerAdapter {
             new BDNEResponder(),
             new EmptyLBResponder(),
             new OnlineOnlyResponse(),
-            new TestResponder()
+            new TestResponder(),
+            new DontUpdatePermResponse()
     );
 
     public AutoRespondManager(JsonObject responses) {
