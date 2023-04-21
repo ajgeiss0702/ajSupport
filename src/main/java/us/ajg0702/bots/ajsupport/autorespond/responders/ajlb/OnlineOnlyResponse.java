@@ -1,4 +1,4 @@
-package us.ajg0702.bots.ajsupport.autorespond.responders;
+package us.ajg0702.bots.ajsupport.autorespond.responders.ajlb;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;

@@ -3,10 +3,14 @@ package us.ajg0702.bots.ajsupport.autorespond;
 import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import us.ajg0702.bots.ajsupport.autorespond.responders.*;
+import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.BDNEResponder;
+import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.DontUpdatePermResponse;
+import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.EmptyLBResponder;
+import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.OnlineOnlyResponse;
+import us.ajg0702.bots.ajsupport.autorespond.responders.ajq.SpigotForwardingResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,11 +20,15 @@ import java.util.List;
 public class AutoRespondManager extends ListenerAdapter {
 
     List<Responder> responders = Arrays.asList(
+            // ajlb
             new BDNEResponder(),
             new EmptyLBResponder(),
             new OnlineOnlyResponse(),
             new TestResponder(),
-            new DontUpdatePermResponse()
+            new DontUpdatePermResponse(),
+
+            // ajq
+            new SpigotForwardingResponse()
     );
 
     public AutoRespondManager(JsonObject responses) {
