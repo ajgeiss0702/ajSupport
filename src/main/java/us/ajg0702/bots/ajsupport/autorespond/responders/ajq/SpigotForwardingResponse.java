@@ -18,7 +18,10 @@ public class SpigotForwardingResponse extends Responder {
 
         boolean mentions_ajq = c.contains("ajq");
 
-        if(c.contains("menu") || c.contains("npc") || c.contains("deluxehub") || c.contains("deluxemenus") || c.contains("citizen")) {
+        if(
+                (c.contains("menu") || c.contains("npc") || c.contains("deluxehub") || c.contains("deluxemenus") || c.contains("citizen"))
+                && (c.contains("not work") || c.contains("no work") || c.contains("unknown"))
+        ) {
             if(r == null && RESPONSES != null) {
                 r = new Response(mentions_ajq ? 80 : 70, RESPONSES.get("spigotforward").getAsString());
             }
