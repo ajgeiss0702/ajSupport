@@ -22,7 +22,7 @@ public class Utils {
      * @return the url (e.g. https://paste.ajg0702.us/7B8Rmr8 )
      */
     public static String uploadAttachment(SupportBot bot, Message.Attachment attachment) throws IOException, ExecutionException, InterruptedException, TimeoutException {
-        URL url = new URL("https://paste.ajg0702.us/post");
+        URL url = new URL("https://bytebin.ajg0702.us/post");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         con.setRequestMethod("POST");
