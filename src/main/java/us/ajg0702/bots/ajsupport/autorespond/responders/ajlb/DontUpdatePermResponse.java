@@ -16,7 +16,11 @@ public class DontUpdatePermResponse extends Responder {
     private final List<String> activators = Arrays.asList(
             "only take players without op",
             "only players without op",
-            "i not on the leaderboard"
+            "i not on the leaderboard",
+            "show only de-opped",
+            "show only deopped",
+            "only show de-opped",
+            "only show deopped"
     );
     @Override
     public Response checkForResponse(Member author, Message message) {
