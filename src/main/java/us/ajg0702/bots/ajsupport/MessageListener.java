@@ -27,6 +27,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static us.ajg0702.bots.ajsupport.CommandListener.hasRole;
 
@@ -41,6 +43,8 @@ public class MessageListener extends ListenerAdapter {
 
     private final Map<Long, Long> lastHelperMentionWarns = new HashMap<>();
     private final Map<Long, Long> lastAjMentionWarns = new HashMap<>();
+
+    private final Pattern pastebinPattern = Pattern.compile("https://pastebin\\.com/(raw/)?(.*)");
 
 
     @Override
@@ -76,6 +80,23 @@ public class MessageListener extends ListenerAdapter {
                     }
                 }
             }
+        }
+
+
+        List<String> pastebinLinks = new ArrayList<>();
+        Matcher pastebinMatcher = pastebinPattern.matcher(e.getMessage().getContentStripped());
+        while(pastebinMatcher.find()) {
+            String code = pastebinMatcher.group(2);
+            pastebinLinks.add("https://paste.ajg0702.us/pastebin/" + code);
+        }
+        if(pastebinLinks.size() > 0) {
+            e.getMessage()
+                    .reply(
+                            "I've uploaded " + (pastebinLinks.size() == 1 ? "that" : "those") + " for you: "
+                            + String.join("\n", pastebinLinks)
+                    )
+                    .setActionRow(Button.secondary("why_pastesite", "Why?"))
+                    .queue();
         }
 
         if(e.getMember() == null) return;
@@ -131,7 +152,17 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent e) {
         if (e.getComponentId().equals("why_pastesite")) {
-            e.reply("You should use a paste site when sending files for one simple reason:\n It's easier to help you.\n\naj replies to many messages when all he has is his phone. Discord doesnt preview text files on phones (at least not yet), so he would have to download the file to be able to view it (which is a hassle, and a waste of space).\nIf you want aj to be able to help you, please use a paste site (e.g. https://paste.ajg0702.us/ ).")
+            e.reply("You should use a paste site when sending files for one simple reason:\n" +
+                            " It's easier to help you.\n" +
+                            "\n" +
+                            "aj replies to many messages when all he has is his phone. " +
+                            "Discord doesnt preview text files on phones (at least not yet), " +
+                            "so he would have to download the file to be able to view it " +
+                            "(which is a hassle, and a waste of space).\n" +
+                            "If you want aj to be able to help you, please use a paste site " +
+                            "(e.g. https://paste.ajg0702.us/ ).\n" +
+                            "\n" +
+                            "I recommend against using pastebin, as it tends to be annoying to view, and it's ads are annoying.")
                     .setEphemeral(true).queue();
         }
     }
