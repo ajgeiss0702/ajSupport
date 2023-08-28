@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -130,12 +131,14 @@ public class MessageListener extends ListenerAdapter {
                                         "In the future, please be patient and wait for a response.")
                                 .queue();
                     }
+                    e.getMember().timeoutFor(Duration.ofSeconds(30)).queue();
                 }
 
                 if(hasRole(mentionedMember, 615721804585107477L) && e.getMessage().getMessageReference() == null) {
                     Long last = lastAjMentionWarns.getOrDefault(e.getChannel().getIdLong(), 0L);
                     lastAjMentionWarns.put(e.getChannel().getIdLong(), System.currentTimeMillis());
-                    if(System.currentTimeMillis() - last > 15000) {
+                    long distanceSinceLast = System.currentTimeMillis() - last;
+                    if(distanceSinceLast > 15000) {
                         e.getMessage().reply(
                                         "Please don't ping aj!\n" +
                                                 "\naj has all notifications on, so he will see your message without you needing to ping him.\n" +
@@ -144,6 +147,7 @@ public class MessageListener extends ListenerAdapter {
                                                 "In the future, please be patient and wait for a response. (without pinging)")
                                 .queue();
                     }
+                    e.getMember().timeoutFor(Duration.ofSeconds(30)).queue();
                 }
             }
         }
