@@ -12,7 +12,7 @@ public class EmptyLBResponder extends Responder {
     @Override
     public Response checkForResponse(Member author, Message message) {
         String c = message.getContentStripped().toLowerCase(Locale.ROOT);
-        if(!c.contains("---")) return null;
+        if(!c.contains("---") && !c.contains("—-")) return null;
 
         if(r == null && RESPONSES != null) {
             r = new Response(80, RESPONSES.get("emptylb").getAsString());
