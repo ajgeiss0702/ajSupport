@@ -42,10 +42,13 @@ public class MessageListener extends ListenerAdapter {
 
     private static final List<String> TEXT_EXTENSIONS = Arrays.asList("txt", "yml", "log", "yaml", "json", "js", "log.gz");
 
+    private static final int WEEK_SECONDS = 604800;
+
     private final Map<Long, Long> lastHelperMentionWarns = new HashMap<>();
     private final Map<Long, Long> lastAjMentionWarns = new HashMap<>();
 
     private final Pattern pastebinPattern = Pattern.compile("https://pastebin\\.com/(raw/)?(.*)");
+
 
 
     @Override
@@ -123,7 +126,8 @@ public class MessageListener extends ListenerAdapter {
             for (Member mentionedMember : e.getMessage().getMentions().getMembers()) {
                 if(hasRole(mentionedMember, 615729338020528128L) || hasRole(mentionedMember, 859784384739278928L)  && e.getMessage().getMessageReference() == null) {
                     Long last = lastHelperMentionWarns.getOrDefault(e.getChannel().getIdLong(), 0L);
-                    if(System.currentTimeMillis() - last > 15000) {
+                    long distanceSinceLast = System.currentTimeMillis() - last;
+                    if(distanceSinceLast > 15000) {
                         lastHelperMentionWarns.put(e.getChannel().getIdLong(), System.currentTimeMillis());
                         e.getMessage().reply(
                                 "Please don't ping our helpers!\n" +
@@ -131,7 +135,7 @@ public class MessageListener extends ListenerAdapter {
                                         "In the future, please be patient and wait for a response.")
                                 .queue();
                     }
-                    e.getMember().timeoutFor(Duration.ofSeconds(30)).queue();
+                    e.getMember().timeoutFor(Duration.ofSeconds(distanceSinceLast < WEEK_SECONDS ? 60 : 30)).queue();
                 }
 
                 if(hasRole(mentionedMember, 615721804585107477L) && e.getMessage().getMessageReference() == null) {
@@ -147,7 +151,7 @@ public class MessageListener extends ListenerAdapter {
                                                 "In the future, please be patient and wait for a response. (without pinging)")
                                 .queue();
                     }
-                    e.getMember().timeoutFor(Duration.ofSeconds(30)).queue();
+                    e.getMember().timeoutFor(Duration.ofSeconds(distanceSinceLast < WEEK_SECONDS ? 60 : 30)).queue();
                 }
             }
         }
