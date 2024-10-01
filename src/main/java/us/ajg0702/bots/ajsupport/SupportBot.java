@@ -86,11 +86,13 @@ public class SupportBot {
                 return;
             }
             CommandListUpdateAction commands = guild.updateCommands();
+            CommandListUpdateAction globalCommands = jda.updateCommands();
             json.keySet().forEach(name -> {
                 String value = json.get(name).getAsString();
                 getLogger().debug("Adding command "+name);
 
-                commands.addCommands(Commands.slash(name, cutString(value, 100)));
+//                commands.addCommands(Commands.slash(name, cutString(value, 100)));
+                globalCommands.addCommands(Commands.slash(name, cutString(value, 100)));
                 //guild.upsertCommand(name, value.substring(0, Math.min(99, value.length()))).queue();
             });
             commands.addCommands(
@@ -109,6 +111,8 @@ public class SupportBot {
                             .addOption(OptionType.STRING, "reason", "The ban reason", false)
             );
             commands.queue();
+            globalCommands.queue();
+
         }).start();
     }
 
