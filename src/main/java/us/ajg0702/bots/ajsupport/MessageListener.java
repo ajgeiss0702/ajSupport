@@ -47,6 +47,9 @@ public class MessageListener extends ListenerAdapter {
     private final Map<Long, Long> lastHelperMentionWarns = new HashMap<>();
     private final Map<Long, Long> lastAjMentionWarns = new HashMap<>();
 
+    private final Map<String, Long> lastPingWarn = new HashMap<>();
+    private final Map<String, Boolean> warnedAboutLongMute = new HashMap<>();
+
     private final Pattern pastebinPattern = Pattern.compile("https://pastebin\\.com/(raw/)?(.*)");
 
 
@@ -140,18 +143,41 @@ public class MessageListener extends ListenerAdapter {
 
                 if(hasRole(mentionedMember, 615721804585107477L) && e.getMessage().getMessageReference() == null) {
                     Long last = lastAjMentionWarns.getOrDefault(e.getChannel().getIdLong(), 0L);
+                    Long lastUser = lastPingWarn.getOrDefault(e.getAuthor().getId(), 0L);
                     lastAjMentionWarns.put(e.getChannel().getIdLong(), System.currentTimeMillis());
+                    lastPingWarn.put(e.getAuthor().getId(), System.currentTimeMillis());
+
                     long distanceSinceLast = System.currentTimeMillis() - last;
+                    long distanceSinceLastUser = System.currentTimeMillis() - lastUser;
+
+                    boolean hasBeenWarnedAboutLongMute = warnedAboutLongMute.getOrDefault(e.getAuthor().getId(), false);
+
+                    // forgive if the user hasnt pinged aj in 60 days (they probably just forgot)
+                    boolean muteUser = hasBeenWarnedAboutLongMute && distanceSinceLastUser < 60 * 24 * 60 * 60e3;
+
                     if(distanceSinceLast > 15000) {
+                        boolean showNotice = !muteUser;
+                        if(showNotice) {
+                            warnedAboutLongMute.put(e.getAuthor().getId(), true);
+                        }
                         e.getMessage().reply(
                                         "Please don't ping aj!\n" +
                                                 "\naj has all notifications on, so he will see your message without you needing to ping him.\n" +
                                                 "Because of that, the only thing that pinging does is annoy him.\n" +
                                                 "If he doesn't respond, that means he's probably busy. He will respond when he can.\n" +
-                                                "In the future, please be patient and wait for a response. (without pinging)")
+                                                "In the future, please be patient and wait for a response. (without pinging)\n" +
+                                                "\n" +
+                                                (showNotice ?
+                                                "**NOTICE:** If you ignore this warning and continue to ping aj, you will be muted for a day." :
+                                                "**You have been muted** because you ignored this warning before. In the future, do not ping aj.") + "\n" +
+                                                "-# This message is a warning for <@" + e.getAuthor().getId() + ">")
                                 .queue();
                     }
-                    e.getMember().timeoutFor(Duration.ofSeconds(distanceSinceLast < WEEK_SECONDS ? 60 : 30)).queue();
+                    int timeoutSeconds = distanceSinceLast < WEEK_SECONDS ? 60 : 30;
+
+                    if(muteUser) timeoutSeconds = 24 * 60 * 60;
+
+                    e.getMember().timeoutFor(Duration.ofSeconds(timeoutSeconds)).queue();
                 }
             }
         }
