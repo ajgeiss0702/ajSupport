@@ -106,7 +106,10 @@ public class MessageListener extends ListenerAdapter {
                     .queue();
         }
 
-        if(e.getMember() == null) return;
+        if(e.getMember() == null) {
+            bot.getLogger().warn("{} is not a member!", e.getAuthor().getName());
+            return;
+        }
 
         MessageChannelUnion channel = e.getChannel();
         long parent = channel instanceof ICategorizableChannel ? ((ICategorizableChannel) channel).getParentCategoryIdLong() : -1;
@@ -172,6 +175,8 @@ public class MessageListener extends ListenerAdapter {
                                                 "**You have been muted** because you ignored this warning before. In the future, do not ping aj.") + "\n" +
                                                 "-# This message is a warning for <@" + e.getAuthor().getId() + ">")
                                 .queue();
+                    } else {
+                        bot.getLogger().info("Not warning due to distanceSinceLast of " + distanceSinceLast);
                     }
                     int timeoutSeconds = distanceSinceLast < WEEK_SECONDS ? 60 : 30;
 
