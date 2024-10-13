@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
+import net.dv8tion.jda.api.interactions.IntegrationType;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -92,7 +94,18 @@ public class SupportBot {
                 getLogger().debug("Adding command "+name);
 
 //                commands.addCommands(Commands.slash(name, cutString(value, 100)));
-                globalCommands.addCommands(Commands.slash(name, cutString(value, 100)));
+                globalCommands.addCommands(
+                        Commands.slash(name, cutString(value, 100))
+                                .setContexts(
+                                        InteractionContextType.BOT_DM,
+                                        InteractionContextType.PRIVATE_CHANNEL,
+                                        InteractionContextType.GUILD
+                                )
+                                .setIntegrationTypes(
+                                        IntegrationType.GUILD_INSTALL,
+                                        IntegrationType.USER_INSTALL
+                                )
+                );
                 //guild.upsertCommand(name, value.substring(0, Math.min(99, value.length()))).queue();
             });
             commands.addCommands(

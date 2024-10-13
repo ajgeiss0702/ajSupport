@@ -8,11 +8,13 @@ version = "1.0.0"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:5.0.0-beta.2")
-    implementation("ch.qos.logback:logback-classic:1.2.10")
+//    implementation("net.dv8tion:JDA:5.1.2")
+    implementation("io.github.JDA-Fork:JDA:55d824408c")
+    implementation("ch.qos.logback:logback-classic:1.4.12")
 
     implementation("com.google.code.gson:gson:2.8.9")
 

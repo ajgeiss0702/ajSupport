@@ -111,9 +111,12 @@ public class CommandListener  extends ListenerAdapter {
                 return;
             }
 
+
+
             guild.updateCommands()
                     .addCommands(Commands.slash("remove", "Unregister commands (aj only)"))
                     .addCommands(Commands.slash("stop", "Stop the bot (aj only)"))
+                    .and(bot.getJDA().updateCommands()) // removes global commands
                     .submit().thenRun(() -> hook.sendMessage("Removed the commands!").setEphemeral(true).queue());
 
 
