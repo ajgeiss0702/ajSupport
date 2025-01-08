@@ -111,8 +111,14 @@ public class AutoRespondManager extends ListenerAdapter {
                             )
                             .build()
             ).queue();
-
-            message.reply(bot.getJson().get(responseKey).getAsString()).queue();
+            message.reply(bot.getJson().get(responseKey).getAsString())
+                    .addEmbeds(
+                            new EmbedBuilder()
+                                    .setDescription("The message above is an automated response. If it is not helpful, please state that it was not helpful so that a human can help you when they are available. Otherwise they may assume this message solved your issue")
+                                    .setFooter("ajSupport • Selection: vectorize • Response confidence: " + Math.round(topResult.getScore()*10000)/100 + "%")
+                                    .build()
+                    )
+                    .queue();
 
         } catch (IOException e) {
             bot.getLogger().warn("Error while embedding for auto-response:", e);
