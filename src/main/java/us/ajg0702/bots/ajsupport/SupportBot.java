@@ -78,7 +78,7 @@ public class SupportBot {
             return;
         }
         json = new Gson().fromJson(jsonRaw.toString(), JsonObject.class);
-        jda.addEventListener(new AutoRespondManager(json));
+        jda.addEventListener(new AutoRespondManager(json, this));
 
 
         new Thread(() -> {
