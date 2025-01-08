@@ -178,7 +178,7 @@ public class EmbeddingUtils {
             BigDecimal[] vec = embed("how do I reset my kills leaderboard");
 //            System.out.println(vec);
 
-            List<VectorizeResponse> responses = queryVectorize(vec);
+            VectorizeResponse responses = queryVectorize(vec);
             System.out.println(responses);
         } catch (IOException e) {
             e.printStackTrace();
