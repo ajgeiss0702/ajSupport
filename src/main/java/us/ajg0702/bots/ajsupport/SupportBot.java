@@ -2,10 +2,7 @@ package us.ajg0702.bots.ajsupport;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.JDAInfo;
+import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -13,6 +10,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.interactions.IntegrationType;
 import net.dv8tion.jda.api.interactions.InteractionContextType;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -116,7 +114,11 @@ public class SupportBot {
                             .addOption(OptionType.STRING, "response_name", "The response to send (e.g. onlineonly)", true),
                     Commands.slash("upload", "Upload the first attachment from a message to the paste site (aj only)")
                             .addOption(OptionType.STRING, "message_id", "The message to get attachments from", true),
-                    Commands.message("Reply")
+                    Commands.message("Reply"),
+                    Commands.message("Add to Vectorize")
+                            .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                    Commands.message("Remove from Vectorize")
+                            .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
             );
             commands.addCommands(
                     Commands.slash("ticketban", "Ban someone from creating tickets (aj only)")

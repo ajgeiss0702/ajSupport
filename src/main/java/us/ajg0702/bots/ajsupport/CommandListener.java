@@ -1,18 +1,27 @@
 package us.ajg0702.bots.ajsupport;
 
+import com.google.gson.JsonElement;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.command.MessageContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import net.dv8tion.jda.internal.utils.JDALogger;
 import org.slf4j.Logger;
+import us.ajg0702.bots.ajsupport.autorespond.EmbeddingUtils;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -23,6 +32,24 @@ public class CommandListener  extends ListenerAdapter {
     public CommandListener(SupportBot bot) {
         this.bot = bot;
         logger = JDALogger.getLog("Commands");
+    }
+
+    @Override
+    public void onMessageContextInteraction(MessageContextInteractionEvent e) {
+        final String name = e.getName();
+
+        if(name.equals("Add to Vectorize")) {
+            StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create("add-vectorize-message");
+
+            for (Map.Entry<String, JsonElement> entry : bot.getJson().entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue().getAsString();
+
+                selectMenuBuilder.addOption(key, key, SupportBot.cutString(value, 100));
+            }
+
+            e.reply("Pick a message to attach to this vector | "+e.getTarget().getId()).addActionRow(selectMenuBuilder.build()).setEphemeral(true).queue();
+        }
     }
 
     @Override
