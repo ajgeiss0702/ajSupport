@@ -116,7 +116,7 @@ public class SupportBot {
                             .addOption(OptionType.STRING, "message_id", "The message to get attachments from", true),
                     Commands.message("Reply"),
                     Commands.message("Add to Vectorize")
-                            .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
+                            .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR)),
                     Commands.message("Remove from Vectorize")
                             .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.ADMINISTRATOR))
             );
