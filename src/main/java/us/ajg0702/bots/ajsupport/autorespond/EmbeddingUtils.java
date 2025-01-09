@@ -35,6 +35,18 @@ public class EmbeddingUtils {
             outputStream.flush();
         }
 
+        if(con.getResponseCode() >= 400) {
+            try (var inputStream = con.getErrorStream();
+                 var reader = new InputStreamReader(inputStream)) {
+                StringBuilder responseBuilder = new StringBuilder();
+                int c;
+                while ((c = reader.read()) != -1) {
+                    responseBuilder.append((char) c);
+                }
+                System.out.println("(Embeddings) Error response body: " + responseBuilder);
+            }
+        }
+
         var inputStream = con.getInputStream();
         var reader = new InputStreamReader(inputStream);
 
