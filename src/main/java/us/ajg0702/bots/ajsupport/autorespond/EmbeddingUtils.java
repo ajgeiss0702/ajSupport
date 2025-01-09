@@ -28,8 +28,9 @@ public class EmbeddingUtils {
         con.setRequestProperty("Authorization", "Bearer " + token); // Replace YOUR_BEARER_TOKEN with your actual token
         con.setDoOutput(true);
 
-
-        String payload = String.format("{\"text\": \"%s\"}", string);
+        JsonObject payloadObject = new JsonObject();
+        payloadObject.addProperty("text", string);
+        String payload = new Gson().toJson(payloadObject);
         try (var outputStream = con.getOutputStream()) {
             outputStream.write(payload.getBytes());
             outputStream.flush();
