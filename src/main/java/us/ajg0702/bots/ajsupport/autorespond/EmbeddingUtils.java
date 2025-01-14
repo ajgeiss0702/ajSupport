@@ -139,7 +139,7 @@ public class EmbeddingUtils {
             outputStream.flush();
         }
 
-        System.out.println("(Vectorize) Upsert request returned status " + con.getResponseCode());
+        System.out.println("(Vectorize: Upsert) Request returned status " + con.getResponseCode());
         try (var inputStream = con.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST ? con.getInputStream() : con.getErrorStream();
              var reader = new InputStreamReader(inputStream)) {
             StringBuilder responseBuilder = new StringBuilder();
@@ -147,12 +147,41 @@ public class EmbeddingUtils {
             while ((c = reader.read()) != -1) {
                 responseBuilder.append((char) c);
             }
-            System.out.println("(Vectorize) Response body: " + responseBuilder);
+            System.out.println("(Vectorize: Upsert) Response body: " + responseBuilder);
         }
         
-        
+    }
 
-        
+    public static void deleteFromVectorize(String id) throws IOException {
+        final String token = System.getenv("CF_TOKEN");
+        if(token == null || token.isEmpty()) throw new IOException("Missing CF Token!");
+
+        URL url = new URL("https://api.cloudflare.com/client/v4/accounts/f55b85c8a963663b11036975203c63c0/vectorize/v2/indexes/support-autoresponse/delete_by_ids");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Authorization", "Bearer " + token); // Replace YOUR_BEARER_TOKEN with your actual token
+        con.setDoOutput(true);
+
+        String payload = String.format(
+                "{\"ids\": [\"%s\"]}",
+                id
+        );
+        try (var outputStream = con.getOutputStream()) {
+            outputStream.write(payload.getBytes());
+            outputStream.flush();
+        }
+
+        System.out.println("(Vectorize: Delete) Request returned status " + con.getResponseCode());
+        try (var inputStream = con.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST ? con.getInputStream() : con.getErrorStream();
+             var reader = new InputStreamReader(inputStream)) {
+            StringBuilder responseBuilder = new StringBuilder();
+            int c;
+            while ((c = reader.read()) != -1) {
+                responseBuilder.append((char) c);
+            }
+            System.out.println("(Vectorize: Delete) Response body: " + responseBuilder);
+        }
     }
 
     public static class VectorizeResponse {

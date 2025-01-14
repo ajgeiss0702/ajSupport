@@ -39,16 +39,35 @@ public class CommandListener  extends ListenerAdapter {
         final String name = e.getName();
 
         if(name.equals("Add to Vectorize")) {
-            StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create("add-vectorize-message");
+            if(e.getMember().getId().equals("171160105155297282")) {
+                StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create("add-vectorize-message");
 
-            for (Map.Entry<String, JsonElement> entry : bot.getJson().entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue().getAsString();
+                for (Map.Entry<String, JsonElement> entry : bot.getJson().entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue().getAsString();
 
-                selectMenuBuilder.addOption(key, key, SupportBot.cutString(value, 100));
+                    selectMenuBuilder.addOption(key, key, SupportBot.cutString(value, 100));
+                }
+
+                e.reply("Pick a message to attach to this vector | "+e.getTarget().getId()).addActionRow(selectMenuBuilder.build()).setEphemeral(true).queue();
+            } else {
+                e.reply("You can't do this!").setEphemeral(true).queue();
+                return;
             }
+        }
+        if(name.equals("Remove from Vectorize")) {
+            if(e.getMember().getId().equals("171160105155297282")) {
+                e.deferReply(true).queue();
+                InteractionHook hook = e.getHook().setEphemeral(true);
 
-            e.reply("Pick a message to attach to this vector | "+e.getTarget().getId()).addActionRow(selectMenuBuilder.build()).setEphemeral(true).queue();
+                try {
+                    EmbeddingUtils.deleteFromVectorize(e.getTarget().getId());
+                    hook.sendMessage("Removed from vectorize!").queue();
+                } catch (IOException ex) {
+                    hook.sendMessage("Failed to remove from vectorize: " + ex.getMessage()).queue();
+                    bot.getLogger().warn("Failed to remove from vectorize:", ex);
+                }
+            }
         }
     }
 
