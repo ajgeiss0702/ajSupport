@@ -100,9 +100,10 @@ public class AutoRespondManager extends ListenerAdapter {
                 bot.getLogger().error("Cannot find logger-log channel for aj's plugins!");
                 throw new IOException("Cannot find log channel!");
             }
+            double confidence = Math.round(topResult.getScore()*10000d)/100d;
             channel.sendMessageEmbeds(
                     new EmbedBuilder()
-                            .setDescription("vectorize is replying with " + responseKey + " due to result from " + originalMessageLink + "\n" +
+                            .setDescription("vectorize is **" + confidence + "%** sure when replying with `" + responseKey + "` due to result from " + originalMessageLink + "\n" +
                                     "Reply to "+message.getAuthor().getName()+": " +
                                     SupportBot.cutString(
                                             message.getContentStripped().replaceAll("\n", " "),
@@ -115,7 +116,7 @@ public class AutoRespondManager extends ListenerAdapter {
                     .addEmbeds(
                             new EmbedBuilder()
                                     .setDescription("The message above is an automated response. If it is not helpful, please state that it was not helpful so that a human can help you when they are available. Otherwise they may assume this message solved your issue")
-                                    .setFooter("ajSupport • Selection: vectorize • Response confidence: " + Math.round(topResult.getScore()*10000d)/100d + "%")
+                                    .setFooter("ajSupport • Selection: vectorize • Response confidence: " + confidence + "%")
                                     .build()
                     )
                     .queue();
