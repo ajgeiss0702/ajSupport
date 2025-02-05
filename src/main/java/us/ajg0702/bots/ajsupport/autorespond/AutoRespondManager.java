@@ -89,7 +89,7 @@ public class AutoRespondManager extends ListenerAdapter {
         try {
             BigDecimal[] vec = EmbeddingUtils.embed(message.getContentStripped().replaceAll("\\n", " "));
             EmbeddingUtils.VectorizeResponse topResult = EmbeddingUtils.queryVectorize(vec);
-            if(topResult == null || topResult.getScore() < 0.8) return;
+            if(topResult == null || topResult.getScore() < 0.85) return;
 
             String responseKey = topResult.getMetadata().get("response").getAsString();
             String originalChannelId = topResult.getMetadata().get("channelId").getAsString();
