@@ -42,11 +42,15 @@ public class CommandListener  extends ListenerAdapter {
             if(e.getMember().getId().equals("171160105155297282")) {
                 StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create("add-vectorize-message");
 
+                int i = 0;
+
                 for (Map.Entry<String, JsonElement> entry : bot.getJson().entrySet()) {
                     String key = entry.getKey();
                     String value = entry.getValue().getAsString();
 
                     selectMenuBuilder.addOption(key, key, SupportBot.cutString(value, 100));
+                    i++;
+                    if(i >= 25) break;
                 }
 
                 e.reply("Pick a message to attach to this vector | "+e.getTarget().getId()).addActionRow(selectMenuBuilder.build()).setEphemeral(true).queue();

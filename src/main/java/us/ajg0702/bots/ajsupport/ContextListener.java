@@ -33,11 +33,15 @@ public class ContextListener extends ListenerAdapter {
         }
         StringSelectMenu.Builder selectMenuBuilder = StringSelectMenu.create("reply-message");
 
+        int i = 0;
+
         for (Map.Entry<String, JsonElement> entry : bot.getJson().entrySet()) {
             String name = entry.getKey();
             String value = entry.getValue().getAsString();
 
             selectMenuBuilder.addOption(name, name, SupportBot.cutString(value, 100));
+            i++;
+            if(i >= 25) break;
         }
 
         e.reply("Pick a message to reply with | "+e.getTarget().getId()).addActionRow(selectMenuBuilder.build()).setEphemeral(true).queue();
