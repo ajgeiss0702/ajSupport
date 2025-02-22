@@ -153,7 +153,7 @@ public class MessageListener extends ListenerAdapter {
                     long distanceSinceLast = System.currentTimeMillis() - last;
                     long distanceSinceLastUser = System.currentTimeMillis() - lastUser;
 
-                    boolean hasBeenWarnedAboutLongMute = warnedAboutLongMute.getOrDefault(e.getAuthor().getId(), false);
+                    boolean hasBeenWarnedAboutLongMute = warnedAboutLongMute.get(e.getAuthor().getId()) != null;
 
                     // forgive if the user hasnt pinged aj in 60 days (they probably just forgot)
                     boolean muteUser = hasBeenWarnedAboutLongMute && distanceSinceLastUser < 60 * 24 * 60 * 60e3;
