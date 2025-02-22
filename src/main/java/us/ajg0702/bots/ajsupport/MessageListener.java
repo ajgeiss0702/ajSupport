@@ -48,7 +48,7 @@ public class MessageListener extends ListenerAdapter {
     private final Map<Long, Long> lastAjMentionWarns = new HashMap<>();
 
     private final Map<String, Long> lastPingWarn = new HashMap<>();
-    private final Map<String, Boolean> warnedAboutLongMute = new HashMap<>();
+    private final Map<String, String> warnedAboutLongMute = new HashMap<>();
 
     private final Pattern pastebinPattern = Pattern.compile("https://pastebin\\.com/(raw/)?(.*)");
 
@@ -160,10 +160,7 @@ public class MessageListener extends ListenerAdapter {
 
                     if(distanceSinceLast > 15000) {
                         boolean showNotice = !muteUser;
-                        if(showNotice) {
-                            warnedAboutLongMute.put(e.getAuthor().getId(), true);
-                        }
-                        e.getMessage().reply(
+                        Message warningMessage = e.getMessage().reply(
                                         "Please don't ping aj!\n" +
                                                 "\naj has all notifications on, so he will see your message without you needing to ping him.\n" +
                                                 "Because of that, the only thing that pinging does is annoy him.\n" +
@@ -172,9 +169,12 @@ public class MessageListener extends ListenerAdapter {
                                                 "\n" +
                                                 (showNotice ?
                                                 "**NOTICE:** If you ignore this warning and continue to ping aj, you will be muted for a day." :
-                                                "**You have been muted** because you ignored this warning before. In the future, do not ping aj.") + "\n" +
+                                                "**You have been muted** because you ignored this warning [before](https://discord.com/channels/615715762912362565/" + warnedAboutLongMute.get(e.getAuthor().getId()) + "). In the future, do not ping aj.") + "\n" +
                                                 "-# This message is a warning for <@" + e.getAuthor().getId() + ">")
-                                .queue();
+                                .complete();
+                        if(showNotice) {
+                            warnedAboutLongMute.put(e.getAuthor().getId(), warningMessage.getChannelId() + "/" + warningMessage.getId());
+                        }
                     } else {
                         bot.getLogger().info("Not warning due to distanceSinceLast of " + distanceSinceLast);
                     }
