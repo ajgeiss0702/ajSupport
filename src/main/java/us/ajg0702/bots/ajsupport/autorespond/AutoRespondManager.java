@@ -48,38 +48,42 @@ public class AutoRespondManager extends ListenerAdapter {
     }
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        Member member = event.getMember();
-        if(member == null) return;
-        if(member.getUser().isBot()) return;
+        try {
+            Member member = event.getMember();
+            if(member == null) return;
+            if(member.getUser().isBot()) return;
 
-        List<Response> responses = new ArrayList<>();
-        for (Responder responder : responders) {
-            Response r = responder.checkForResponse(member, event.getMessage());
-            if(r != null) responses.add(r);
+            List<Response> responses = new ArrayList<>();
+            for (Responder responder : responders) {
+                Response r = responder.checkForResponse(member, event.getMessage());
+                if(r != null) responses.add(r);
+            }
+
+            if(responses.isEmpty()) {
+                autoRespondEmbeddings(event.getMessage());
+                return;
+            }
+
+            responses.sort(Comparator.comparingInt(Response::getConfidence).reversed());
+
+            Response bestResponse = responses.get(0);
+            if(bestResponse == null) { // I don't think this could happen, but just to be safe
+                autoRespondEmbeddings(event.getMessage());
+                return;
+            }
+
+            event.getMessage()
+                    .reply(bestResponse.getMessage())
+                    .addEmbeds(
+                            new EmbedBuilder()
+                                    .setDescription("The message above is an automated response. If it is not helpful, please state that it was not helpful so that a human can help you when they are available. Otherwise they may assume this message solved your issue")
+                                    .setFooter("ajSupport • Selection: static • Response confidence: " + bestResponse.getConfidence() + "%")
+                                    .build()
+                    )
+                    .queue();
+        } catch(Exception e) {
+            bot.getLogger().error("An error occurred while checking for auto-response", e);
         }
-
-        if(responses.isEmpty()) {
-            autoRespondEmbeddings(event.getMessage());
-            return;
-        }
-
-        responses.sort(Comparator.comparingInt(Response::getConfidence).reversed());
-
-        Response bestResponse = responses.get(0);
-        if(bestResponse == null) { // I don't think this could happen, but just to be safe
-            autoRespondEmbeddings(event.getMessage());
-            return;
-        }
-
-        event.getMessage()
-                .reply(bestResponse.getMessage())
-                .addEmbeds(
-                        new EmbedBuilder()
-                                .setDescription("The message above is an automated response. If it is not helpful, please state that it was not helpful so that a human can help you when they are available. Otherwise they may assume this message solved your issue")
-                                .setFooter("ajSupport • Selection: static • Response confidence: " + bestResponse.getConfidence() + "%")
-                                .build()
-                )
-                .queue();
     }
 
     public void autoRespondEmbeddings(Message message) {
