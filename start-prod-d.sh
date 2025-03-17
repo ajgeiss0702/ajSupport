@@ -1,10 +1,9 @@
 #!/bin/bash
 
 git remote update
-UPSTREAM=${1:-'@{u}'}
 LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse "$UPSTREAM")
-BASE=$(git merge-base @ "$UPSTREAM")
+REMOTE=$(git rev-parse @{u})
+BASE=$(git merge-base @ @{u})
 
 if [ $LOCAL = $REMOTE ]; then
     echo "Up-to-date"
