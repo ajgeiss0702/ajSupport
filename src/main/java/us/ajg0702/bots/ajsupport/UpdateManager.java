@@ -28,16 +28,19 @@ public class UpdateManager {
                         .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                         .redirectError(ProcessBuilder.Redirect.INHERIT)
                         .start().waitFor(20, TimeUnit.SECONDS);
+
                 setState("<a:loading:1350993899241472082> Compiling...");
                 new ProcessBuilder("/bin/bash", "-c", "./gradlew clean shadowJar")
                         .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                         .redirectError(ProcessBuilder.Redirect.INHERIT)
                         .start().waitFor(5, TimeUnit.MINUTES);
+
                 setState(":white_check_mark: Done. Restarting now!");
                 new ProcessBuilder("/bin/bash", "-c", "sudo systemctl try-restart ajsupport &")
                         .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                         .redirectError(ProcessBuilder.Redirect.INHERIT)
                         .start().waitFor(5, TimeUnit.SECONDS);
+
                 updateMessages.clear();
                 running = false;
             } catch (IOException | InterruptedException e) {
