@@ -30,6 +30,7 @@ public class SupportBot {
     private final JDA jda;
     private final Logger logger;
     private JsonObject json;
+    private final UpdateManager updateManager = new UpdateManager();
 
     public static void main(String[] args) throws InterruptedException {
         JDABuilder builder = JDABuilder.createDefault(args[0]);
@@ -108,7 +109,7 @@ public class SupportBot {
             });
             commands.addCommands(
                     Commands.slash("remove", "Unregister commands (aj only)"),
-                    Commands.slash("stop", "Stop the bot (aj only)"),
+                    Commands.slash("update", "Update the bot (aj only)"),
                     Commands.slash("reply", "reply to a certain message (aj only)")
                             .addOption(OptionType.STRING, "message_id", "The message to reply to", true)
                             .addOption(OptionType.STRING, "response_name", "The response to send (e.g. onlineonly)", true),
@@ -146,6 +147,10 @@ public class SupportBot {
 
     public JsonObject getJson() {
         return json;
+    }
+
+    public UpdateManager getUpdateManager() {
+        return updateManager;
     }
 
     public void reply(Message message, User user, String key) throws EchoException {

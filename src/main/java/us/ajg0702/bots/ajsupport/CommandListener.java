@@ -165,7 +165,7 @@ public class CommandListener  extends ListenerAdapter {
 
             guild.updateCommands()
                     .addCommands(Commands.slash("remove", "Unregister commands (aj only)"))
-                    .addCommands(Commands.slash("stop", "Stop the bot (aj only)"))
+                    .addCommands(Commands.slash("update", "Update the bot (aj only)"))
                     .and(bot.getJDA().updateCommands()) // removes global commands
                     .submit().thenRun(() -> hook.sendMessage("Removed the commands!").setEphemeral(true).queue());
 
@@ -182,6 +182,15 @@ public class CommandListener  extends ListenerAdapter {
                 ex.printStackTrace();
                 hook.sendMessage("An error occurred").setEphemeral(true).queue();
             }*/
+            return;
+        }
+        if(name.equals("update")) {
+            if(!e.getUser().getId().equals("171160105155297282")) {
+                e.reply("You cant do this!").setEphemeral(true).queue();
+                return;
+            }
+            e.reply("Starting update...").setEphemeral(true)
+                    .queue(m -> bot.getUpdateManager().update(m));
             return;
         }
         if(name.equals("stop")) {
