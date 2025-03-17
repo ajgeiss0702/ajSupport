@@ -34,7 +34,7 @@ public class UpdateManager {
                         .redirectError(ProcessBuilder.Redirect.INHERIT)
                         .start().waitFor(5, TimeUnit.MINUTES);
                 setState(":white_check_mark: Done. Restarting now!");
-                new ProcessBuilder("/bin/bash", "-c", "sudo systemctl restart ajsupport &")
+                new ProcessBuilder("/bin/bash", "-c", "sudo systemctl try-restart ajsupport &")
                         .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                         .redirectError(ProcessBuilder.Redirect.INHERIT)
                         .start().waitFor(5, TimeUnit.SECONDS);
