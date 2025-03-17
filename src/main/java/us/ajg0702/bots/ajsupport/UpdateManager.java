@@ -24,11 +24,20 @@ public class UpdateManager {
         new Thread(() -> {
             setState("<a:loading:1350993899241472082> Pulling changes..");
             try {
-                Runtime.getRuntime().exec("bash -c \"git pull\"").waitFor(30, TimeUnit.SECONDS);
+                new ProcessBuilder("/bin/bash", "-c", "git pull")
+                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .redirectError(ProcessBuilder.Redirect.INHERIT)
+                        .start().waitFor(20, TimeUnit.SECONDS);
                 setState("<a:loading:1350993899241472082> Compiling...");
-                Runtime.getRuntime().exec("bash -c \"./gradlew clean shadowJar\"").waitFor(5, TimeUnit.MINUTES);
+                new ProcessBuilder("/bin/bash", "-c", "./gradlew clean shadowJar")
+                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .redirectError(ProcessBuilder.Redirect.INHERIT)
+                        .start().waitFor(5, TimeUnit.MINUTES);
                 setState(":white_check_mark: Done. Restarting now!");
-                Runtime.getRuntime().exec("bash -c \"sudo systemctl restart ajsupport &\"").waitFor(5, TimeUnit.SECONDS);
+                new ProcessBuilder("/bin/bash", "-c", "sudo systemctl restart ajsupport &")
+                        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                        .redirectError(ProcessBuilder.Redirect.INHERIT)
+                        .start().waitFor(5, TimeUnit.SECONDS);
                 updateMessages.clear();
                 running = false;
             } catch (IOException | InterruptedException e) {
