@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,14 +36,34 @@ public class InviteListener extends ListenerAdapter {
     }
 
     @Override
+    public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
+        String mention = "<@"+e.getUser().getId()+">";
+        bot.getLogger().debug(e.getUser().getAsTag()+" left!");
+        TextChannel welcomeChannel = bot.getJDA().getTextChannelById(698756204801032202L);
+        if(welcomeChannel == null) {
+            bot.getLogger().error("Cannot find welcome channel for aj's plugins! Cannot send leave message");
+        } else {
+            welcomeChannel.sendMessage( mention + " left.").queue();
+        }
+    }
+
+    @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
+        String mention = "<@"+e.getUser().getId()+">";
+        bot.getLogger().debug(e.getUser().getAsTag()+" joined!");
+
+        TextChannel welcomeChannel = bot.getJDA().getTextChannelById(698756204801032202L);
+        if(welcomeChannel == null) {
+            bot.getLogger().error("Cannot find welcome channel for aj's plugins! Cannot send join message");
+        } else {
+            welcomeChannel.sendMessage("Hey " + mention + ", welcome to the discord server for aj's Plugins! If you are here for support, make sure to read <#1064604482752762076>!").queue();
+        }
+
         TextChannel channel = bot.getJDA().getTextChannelById(698756204801032202L);
         if(channel == null) {
             bot.getLogger().error("Cannot find logger-log channel for aj's plugins!");
             return;
         }
-        String mention = "<@"+e.getUser().getId()+">";
-        bot.getLogger().debug(e.getUser().getAsTag()+" joined!");
         try {
             Thread.sleep(100);
             Map<String, Integer> newUses = getInviteCounts(e.getGuild());
