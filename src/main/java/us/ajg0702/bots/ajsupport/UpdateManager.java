@@ -35,7 +35,7 @@ public class UpdateManager {
                         .redirectError(ProcessBuilder.Redirect.INHERIT)
                         .start().waitFor(5, TimeUnit.MINUTES);
 
-                setState(":white_check_mark: Done. Restarting now!");
+                setState(":white_check_mark: Done. Restarting now!", true);
                 new ProcessBuilder("/bin/bash", "-c", "sudo systemctl try-restart ajsupport &")
                         .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                         .redirectError(ProcessBuilder.Redirect.INHERIT)
@@ -55,5 +55,14 @@ public class UpdateManager {
     public void setState(String state) {
         this.state = state;
         updateMessages.forEach(e -> e.editOriginal(state).queue());
+    }
+
+    private void setState(String state, boolean wait) {
+        this.state = state;
+        if(wait) {
+            updateMessages.forEach(e -> e.editOriginal(state).complete());
+        } else {
+            updateMessages.forEach(e -> e.editOriginal(state).queue());
+        }
     }
 }
