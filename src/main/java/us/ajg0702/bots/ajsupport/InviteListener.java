@@ -2,6 +2,7 @@ package us.ajg0702.bots.ajsupport;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -57,6 +58,13 @@ public class InviteListener extends ListenerAdapter {
             bot.getLogger().error("Cannot find welcome channel for aj's plugins! Cannot send join message");
         } else {
             welcomeChannel.sendMessage("Hey " + mention + ", welcome to the discord server for aj's Plugins! If you are here for support, make sure to read <#1064604482752762076>!").queue();
+        }
+
+        Role userRole = e.getGuild().getRoleById(615723350374744088L);
+        if(userRole == null) {
+            bot.getLogger().error("Cannot find User role! Cannot add to new member!");
+        } else {
+            e.getGuild().addRoleToMember(e.getMember(), userRole).queue();
         }
 
         TextChannel channel = bot.getJDA().getTextChannelById(698756204801032202L);
