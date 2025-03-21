@@ -39,7 +39,7 @@ public class InviteListener extends ListenerAdapter {
     public void onGuildMemberRemove(GuildMemberRemoveEvent e) {
         String mention = "<@"+e.getUser().getId()+">";
         bot.getLogger().debug(e.getUser().getAsTag()+" left!");
-        TextChannel welcomeChannel = bot.getJDA().getTextChannelById(698756204801032202L);
+        TextChannel welcomeChannel = bot.getJDA().getTextChannelById(615723022917304321L);
         if(welcomeChannel == null) {
             bot.getLogger().error("Cannot find welcome channel for aj's plugins! Cannot send leave message");
         } else {
@@ -52,7 +52,7 @@ public class InviteListener extends ListenerAdapter {
         String mention = "<@"+e.getUser().getId()+">";
         bot.getLogger().debug(e.getUser().getAsTag()+" joined!");
 
-        TextChannel welcomeChannel = bot.getJDA().getTextChannelById(698756204801032202L);
+        TextChannel welcomeChannel = bot.getJDA().getTextChannelById(615723022917304321L);
         if(welcomeChannel == null) {
             bot.getLogger().error("Cannot find welcome channel for aj's plugins! Cannot send join message");
         } else {
