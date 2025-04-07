@@ -13,7 +13,8 @@ repositories {
 
 dependencies {
 //    implementation("net.dv8tion:JDA:5.1.2")
-    implementation("io.github.JDA-Fork:JDA:55d824408c")
+//    implementation("io.github.JDA-Fork:JDA:55d824408c")
+    implementation("net.dv8tion:JDA:5.3.2")
     implementation("ch.qos.logback:logback-classic:1.4.12")
 
     implementation("com.google.code.gson:gson:2.8.9")
