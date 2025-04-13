@@ -2,14 +2,17 @@ package us.ajg0702.bots.ajsupport;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -44,7 +47,15 @@ public class InviteListener extends ListenerAdapter {
         if(welcomeChannel == null) {
             bot.getLogger().error("Cannot find welcome channel for aj's plugins! Cannot send leave message");
         } else {
-            welcomeChannel.sendMessage( mention + " left.").queue();
+            String effectiveName = MarkdownSanitizer.escape(e.getUser().getEffectiveName());
+            String username = MarkdownSanitizer.escape(e.getUser().getName());
+            welcomeChannel.sendMessage( mention + " left.\n-# " +
+                            effectiveName + " (" +
+                            (!effectiveName.equals(username) ? username+" / " : "") +
+                            e.getUser().getId() + ")"
+                    )
+                    .setAllowedMentions(Collections.singletonList(Message.MentionType.USER))
+                    .queue();
         }
     }
 
