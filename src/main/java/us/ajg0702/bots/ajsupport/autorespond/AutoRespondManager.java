@@ -53,6 +53,7 @@ public class AutoRespondManager extends ListenerAdapter {
             if(member == null) return;
             if(member.getUser().isBot()) return;
             if(event.getChannel().getId().equals("1369071031662284870")) return;
+            if(event.getChannel().getId().equals("1371201897528164382")) return;
 
             List<Response> responses = new ArrayList<>();
             for (Responder responder : responders) {
