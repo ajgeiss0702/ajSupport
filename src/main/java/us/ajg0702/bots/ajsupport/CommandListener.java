@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import us.ajg0702.bots.ajsupport.autorespond.EmbeddingUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -72,6 +74,24 @@ public class CommandListener  extends ListenerAdapter {
                     bot.getLogger().warn("Failed to remove from vectorize:", ex);
                 }
             }
+        }
+
+        if(name.equals("Upload Text File")) {
+            e.deferReply(true).queue();
+            InteractionHook hook = e.getHook().setEphemeral(true);
+
+            List<String> urls = new ArrayList<>();
+            for (Message.Attachment attachment : e.getTarget().getAttachments()) {
+                try {
+                    String url = Utils.uploadAttachment(bot, attachment);
+                    urls.add(url);
+                } catch (IOException | ExecutionException | InterruptedException | TimeoutException ex) {
+                    bot.getLogger().warn("Failed to upload file:", ex);
+                    urls.add("[" + attachment.getFileName() + " + fail]");
+                }
+            }
+            hook.sendMessage("Uploaded!" + (urls.size() > 1 ? "\n" : " ") + String.join("\n", urls)).setEphemeral(true).queue();
+
         }
     }
 
