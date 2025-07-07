@@ -103,20 +103,22 @@ public class SupportBot {
                                 .setIntegrationTypes(
                                         IntegrationType.GUILD_INSTALL,
                                         IntegrationType.USER_INSTALL
-                                ),
-                        Commands.message("Upload Text File")
-                                .setContexts(
-                                        InteractionContextType.BOT_DM,
-                                        InteractionContextType.PRIVATE_CHANNEL,
-                                        InteractionContextType.GUILD
-                                )
-                                .setIntegrationTypes(
-                                        IntegrationType.GUILD_INSTALL,
-                                        IntegrationType.USER_INSTALL
                                 )
                 );
                 //guild.upsertCommand(name, value.substring(0, Math.min(99, value.length()))).queue();
             });
+            globalCommands.addCommands(
+                    Commands.message("Upload Text File")
+                            .setContexts(
+                                    InteractionContextType.BOT_DM,
+                                    InteractionContextType.PRIVATE_CHANNEL,
+                                    InteractionContextType.GUILD
+                            )
+                            .setIntegrationTypes(
+                                    IntegrationType.GUILD_INSTALL,
+                                    IntegrationType.USER_INSTALL
+                            )
+            );
             commands.addCommands(
                     Commands.slash("remove", "Unregister commands (aj only)"),
                     Commands.slash("update", "Update the bot (aj only)"),
