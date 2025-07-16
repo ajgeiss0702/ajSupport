@@ -1,6 +1,6 @@
 {
   "wiki": "Hello! You can probably find the answer you are looking for on the wiki.\n\nYou can find the wiki here: https://wiki.ajg0702.us",
-  "board": "Hello!\nIt seems like you skipped the most important part of setting up ajLeaderboards.\nPlease read step 2 here: https://wiki.ajg0702.us/ajLeaderboards/setup/#2-required-add-the-placeholder-to-ajleaderboards",
+  "board": "Hello!\nThe message `Board does not exist` and `BDNE` means ajLeaderboards cannot find the board you specified.\nSee more explanation and possible fixes in the following FAQ section: ```I'm trying to display the leaderboard, but it just says Board does not exist``` <https://wiki.ajg0702.us/ajLeaderboards/faq/#im-trying-to-display-the-leaderboard-but-it-just-says-board-does-not-exist>",
   "placeholders": "Hello!\n\nIt looks like you are using old placeholders for ajLeaderboards.\n\nYou can see the new placeholders here: https://wiki.ajg0702.us/ajLeaderboards/setup/placeholders",
   "dontupdateperm": "Hello! You might not be appearing on the leaderboard because of the `dontupdate` permission.\nThis can happen if you are opped, or if you have the `*` permission in your permission plugin.\nSee the link below for possible fixes.\n\nMore info: https://wiki.ajg0702.us/ajLeaderboards/faq#admins-dont-show-up-on-the-leaderboard",
   "onlineonly": "Hello! This question in the FAQ might be relavent to you:```Why does the leaderboard only show online players?```https://wiki.ajg0702.us/ajLeaderboards/faq#why-does-the-leaderboard-only-show-online-players",
