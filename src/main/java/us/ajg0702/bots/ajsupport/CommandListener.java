@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -275,7 +276,9 @@ public class CommandListener  extends ListenerAdapter {
         }
         logger.debug("SlashCommand "+name);
 
-        e.reply(bot.getJson().get(name).getAsString()).queue();
+        e.reply(bot.getJson().get(name).getAsString())
+                .setEphemeral(Objects.equals(e.getChannelId(), "1371201897528164382"))
+                .queue();
     }
 
 
