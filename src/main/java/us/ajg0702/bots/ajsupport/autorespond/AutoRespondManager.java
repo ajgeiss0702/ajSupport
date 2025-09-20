@@ -11,10 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import us.ajg0702.bots.ajsupport.EchoException;
 import us.ajg0702.bots.ajsupport.SupportBot;
 import us.ajg0702.bots.ajsupport.autorespond.responders.*;
-import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.BDNEResponder;
-import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.DontUpdatePermResponse;
-import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.EmptyLBResponder;
-import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.OnlineOnlyResponse;
+import us.ajg0702.bots.ajsupport.autorespond.responders.ajlb.*;
 import us.ajg0702.bots.ajsupport.autorespond.responders.ajq.SpigotForwardingResponse;
 
 import java.io.IOException;
@@ -37,6 +34,7 @@ public class AutoRespondManager extends ListenerAdapter {
             new OnlineOnlyResponse(),
             new TestResponder(),
             new DontUpdatePermResponse(),
+            new TrojanResponder(),
 
             // ajq
             new SpigotForwardingResponse()
