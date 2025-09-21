@@ -138,7 +138,9 @@ public class MessageListener extends ListenerAdapter {
                         e.getMessage().reply(
                                 "Please don't ping our helpers!\n" +
                                         "\nThey help out when they're able to, and all pinging does is annoy them.\n" +
-                                        "In the future, please be patient and wait for a response.")
+                                        "In the future, please be patient and wait for a response.\n" +
+                                        "If you are not willing to wait, <#1371201897528164382> will give fast responses 24/7, and is able to answer 90% of questions and issues.\n"
+                                        )
                                 .queue();
                     }
                     e.getMember().timeoutFor(Duration.ofSeconds(distanceSinceLast < WEEK_SECONDS ? 60 : 30)).queue();
@@ -166,9 +168,10 @@ public class MessageListener extends ListenerAdapter {
                                                 "Because of that, the only thing that pinging does is annoy him.\n" +
                                                 "If he doesn't respond, that means he's probably busy. He will respond when he can.\n" +
                                                 "In the future, please be patient and wait for a response. (without pinging)\n" +
+                                                "If you are not willing to wait, <#1371201897528164382> will give fast responses 24/7, and is able to answer 90% of questions and issues.\n" +
                                                 "\n" +
                                                 (showNotice ?
-                                                "**NOTICE:** If you ignore this warning and continue to ping aj, you will be muted for a day." :
+                                                "**NOTICE:** If you ignore this warning and ping aj again, you will be muted for a day." :
                                                 "**You have been muted** because you ignored this warning [before](https://discord.com/channels/615715762912362565/" + warnedAboutLongMute.get(e.getAuthor().getId()) + "). In the future, do not ping aj.") + "\n" +
                                                 "-# This message is a warning for <@" + e.getAuthor().getId() + ">")
                                 .complete();
