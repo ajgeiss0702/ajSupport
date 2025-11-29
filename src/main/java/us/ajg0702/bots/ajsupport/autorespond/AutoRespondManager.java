@@ -76,7 +76,7 @@ public class AutoRespondManager extends ListenerAdapter {
                     .reply(bestResponse.getMessage())
                     .addEmbeds(
                             new EmbedBuilder()
-                                    .setDescription("The message above is an automated response. If it is not helpful, please state that it was not helpful so that a human can help you when they are available. Otherwise they may assume this message solved your issue")
+                                    .setDescription("The message above is an automated response. **Please do not ignore it!** If it is not helpful, please state that it was not helpful so that a human can help you when they are available. Otherwise the humans will assume this message solved your issue and not reply.")
                                     .setFooter("ajSupport • Selection: static • Response confidence: " + bestResponse.getConfidence() + "%")
                                     .build()
                     )
