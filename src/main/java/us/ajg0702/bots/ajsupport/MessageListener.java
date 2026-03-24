@@ -59,6 +59,7 @@ public class MessageListener extends ListenerAdapter {
         List<Message.Attachment> attachments = e.getMessage().getAttachments();
         if(attachments.size() > 0) {
             bot.getLogger().debug("Message has attachments");
+            List<String> urls = new ArrayList<>();
             for(Message.Attachment attachment : attachments) {
                 String fileName = attachment.getFileName();
                 String ext = attachment.getFileExtension();
@@ -70,14 +71,7 @@ public class MessageListener extends ListenerAdapter {
                     e.getChannel().sendTyping().queue();
 
                     try {
-                        String url = Utils.uploadAttachment(bot, attachment);
-                        e.getMessage()
-                                .reply(
-                                        "I've uploaded that for you: " + url
-                                )
-                                .setActionRow(Button.secondary("why_pastesite", "Why?"))
-                                .queue();
-                        break;
+                        urls.add(Utils.uploadAttachment(bot, attachment));
                     } catch (IOException | ExecutionException | InterruptedException | TimeoutException err) {
                         bot.getLogger().error("An error occurred while uploading text file:", err);
                         e.getMessage().reply("Please use https://paste.ajg0702.us/ to send text files!\n(Normally I would upload it automatically, but something went wrong)")
@@ -86,6 +80,14 @@ public class MessageListener extends ListenerAdapter {
                         return;
                     }
                 }
+            }
+            if(!urls.isEmpty()) {
+                e.getMessage()
+                        .reply(
+                                "I've uploaded " + (urls.size() == 1 ? "that" : "those") + " for you:\n" + String.join("\n", urls)
+                        )
+                        .setActionRow(Button.secondary("why_pastesite", "Why?"))
+                        .queue();
             }
         }
 
