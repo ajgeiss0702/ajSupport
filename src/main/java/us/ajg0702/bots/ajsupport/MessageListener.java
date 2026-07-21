@@ -1,16 +1,12 @@
 package us.ajg0702.bots.ajsupport;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.attribute.ICategorizableChannel;
-import net.dv8tion.jda.api.entities.channel.concrete.Category;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.unions.IThreadContainerUnion;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
-import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
-import net.dv8tion.jda.api.events.channel.forum.ForumTagAddEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -18,16 +14,10 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,10 +42,66 @@ public class MessageListener extends ListenerAdapter {
 
     private final Pattern pastebinPattern = Pattern.compile("https://pastebin\\.com/(raw/)?(.*)");
 
+    private final Map<String, Long> lastSpamTimeout = new HashMap<>();
 
+    private final Map<String, List<Long>> previousMessageSends = new HashMap<>();
+    private final Map<String, Long> lastChannelSendTime = new HashMap<>();
+    private final Map<String, String> lastChannelSend = new HashMap<>();
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent e) {
+        String sourceUserId = e.getAuthor().getId();
+        if(e.getMessage().getInteractionMetadata() != null) {
+            // get interaction because sometimes people use interactions (bot commands) to spam
+            sourceUserId = e.getMessage().getInteractionMetadata().getUser().getId();
+        }
+
+        String userLastChannelSend = lastChannelSend.get(sourceUserId);
+        Long userLastChannelSendTime = lastChannelSendTime.get(sourceUserId);
+        if(userLastChannelSendTime != null && !e.getChannel().getId().equals(userLastChannelSend)) {
+            long distance = System.currentTimeMillis() - userLastChannelSendTime;
+            if(distance < 750) {
+                spamTimeout(e.getGuild(), sourceUserId);
+                return;
+            }
+        }
+        lastChannelSend.put(sourceUserId, e.getChannel().getId());
+        lastChannelSendTime.put(sourceUserId, System.currentTimeMillis());
+
+        previousMessageSends.compute(sourceUserId, (k, v) -> {
+            if(v == null) {
+                return new ArrayList<>(List.of(System.currentTimeMillis()));
+            } else {
+                v.add(System.currentTimeMillis());
+                while(v.size() > 25) {
+                    v.remove(0);
+                }
+                return v;
+            }
+        });
+
+        List<Long> userPreviousMessageTimes = previousMessageSends.get(sourceUserId)
+                .stream()
+                .filter(t -> System.currentTimeMillis() - t < 60e3)
+                .toList();
+
+        if(userPreviousMessageTimes.size() > 3) {
+            List<Long> previousMessageGaps = new ArrayList<>();
+            for (int i = 1; i < userPreviousMessageTimes.size(); i++) {
+                previousMessageGaps.add(userPreviousMessageTimes.get(i) - userPreviousMessageTimes.get(i - 1));
+            }
+
+            long total = previousMessageGaps.stream().mapToLong(Long::longValue).sum();
+            double avgGapMs = (double) total / previousMessageGaps.size();
+            if(avgGapMs < 500) {
+                bot.getLogger().info("Timing out {} due to average message gap of {}ms", sourceUserId, Math.floor(avgGapMs * 100d) / 100d);
+                spamTimeout(e.getGuild(), sourceUserId);
+                return;
+            }
+        }
+
+
+
         List<Message.Attachment> attachments = e.getMessage().getAttachments();
         if(attachments.size() > 0) {
             bot.getLogger().debug("Message has attachments");
@@ -191,6 +237,75 @@ public class MessageListener extends ListenerAdapter {
                 }
             }
         }
+    }
+
+    public void spamTimeout(Guild guild, String userId) {
+        Member member = guild.getMemberById(userId);
+        if(member == null) {
+            bot.getLogger().warn("Unable to get member from id {}, so unable to time them out for spam", userId);
+            return;
+        }
+
+        Long userLastSpamTimeout = lastSpamTimeout.get(userId);
+        boolean shortTimeout = userLastSpamTimeout == null || System.currentTimeMillis() - userLastSpamTimeout > 30 * 24 * 60 * 60e3;
+        if(shortTimeout) {
+            member.timeoutFor(Duration.ofMinutes(30)).queue();
+        } else {
+            member.timeoutFor(Duration.ofHours(20)).queue();
+        }
+        lastSpamTimeout.put(userId, System.currentTimeMillis());
+
+        member.getUser().openPrivateChannel()
+                .queue(channel ->
+                        channel.sendMessage(
+                                "You have been automatically timed out in aj's Plugins due to spam. " +
+                                        (shortTimeout ?
+                                                "If you continue to spam after this timeout ends, you will be timed out for much longer. " :
+                                                "Since this is the second time you have triggered this recently, you have gotten an even longer timeout. "
+                                        ) +
+                                        "You cannot appeal this timeout (unless you genuinely weren't spamming, but if this check triggered you almost certainly are), just don't spam."
+                                        )
+                                .queue()
+                );
+
+        int messageCount = 0;
+        for (TextChannel textChannel : guild.getTextChannels()) {
+            List<Message> messages = new ArrayList<>();
+            for (Message message : textChannel.getIterableHistory()) {
+                // only purge messages from the past hour
+                if(System.currentTimeMillis() - (message.getTimeCreated().toEpochSecond() * 1e3) > 60 * 60e3) break;
+                if(
+                        !message.getAuthor().getId().equals(userId) &&
+                        (message.getInteractionMetadata() == null || !message.getInteractionMetadata().getUser().getId().equals(userId))
+                ) continue; // skip if not from our target
+                messages.add(message);
+            }
+            if(messages.isEmpty()) continue;
+            if(messages.size() == 1) {
+                messages.get(0).delete().queue();
+            } else {
+                // JDA's purgeMessages requires 2-100 messages per call (Discord bulk-delete limit).
+                // Chunk to avoid IllegalArgumentException on >100 entries.
+                for (int i = 0; i < messages.size(); i += 100) {
+                    List<Message> chunk = messages.subList(i, Math.min(i + 100, messages.size()));
+                    if (chunk.size() == 1) {
+                        chunk.get(0).delete().queue();
+                    } else {
+                        textChannel.purgeMessages(chunk);
+                    }
+                }
+            }
+            messageCount += messages.size();
+        }
+
+        TextChannel logChannel = bot.getJDA().getTextChannelById(698756204801032202L);
+        if(logChannel == null) {
+            bot.getLogger().error("Cannot find logger-log channel for aj's plugins!");
+        } else {
+            logChannel.sendMessage("Timed out " + member.getAsMention() + " with shortTimeout:" + shortTimeout + " and purged " + messageCount + " messages.")
+                    .queue();
+        }
+
     }
 
     @Override
